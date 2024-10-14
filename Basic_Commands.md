@@ -68,3 +68,17 @@ There are three main data types in MySQL:
   - **year** a year in four-digit format, allowed 1901 to 2155 and 0000
 
 </details>
+
+<details>
+<summary> Section 03 : [ INSERT INTO ] : Table </summary>
+  
+<br><br>
+  
+| Command    | Description |
+| ----------- | ----------- |  
+|<b>INSERT INTO table_name VALUES <br>(value1,value2,value3,... ...),<br>(value1,value2,value3,... ...), <br>(value1,value2,value3,... ...), <br>... ... ; <b>| TO add values for all the columns of the table.<br><br> No need to specify the column names in the SQL syntax. <br><br> But need to make sure the order of the values is in the same order as the columns in the table.|
+|<b>INSERT INTO table_name <br>(column1, column2, column3,... ...) VALUES <br>(value1,value2,value3,... ...), <br>(value1,value2,value3,... ...) , <br>(value1,value2,value3,... ...),<br> ... ... ; <b>|To insert Data Only in Specified Columns.|
+  <br>
+
+  <br> 
+</details>
