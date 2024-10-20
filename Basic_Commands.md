@@ -1,7 +1,7 @@
 # PostgreSQL Basics
 
 <details>
-  <summary> Managing Database : [ SHOW | CREATE | DROP | BACKUP | RESTORE | RENAME | COPY ] </summary>
+  <summary> Managing Database : [ SHOW | CREATE | DROP | BACKUP | RESTORE | RENAME | COPY ] : Database </summary>
 <br><br>  
 
 | Command    | Description |  
@@ -19,7 +19,7 @@
 </details>
 
 <details>
-  <summary> Database Definition: [ CREATE ]  </summary>
+  <summary> Database Definition: [ CREATE ] : Table </summary>
 <br><br>
 
 | Command | Description |
@@ -71,7 +71,7 @@ There are three main data types:
 </details>
 
 <details>
-<summary> Modifying Database : [ INSERT INTO ] </summary>
+<summary> Modifying Database : [ INSERT INTO ] : Table </summary>
   
 <br><br>
   
@@ -85,7 +85,7 @@ There are three main data types:
 </details>
 
 <details>
-  <summary>Querying Data : [ SELECT | SELECT DISTINCT ] </summary>
+  <summary>Querying Data : [ SELECT | SELECT DISTINCT ] : Table </summary>
 
   The SELECT statement has the following clauses:
   - Select distinct rows using **DISTINCT** operator.
@@ -108,7 +108,7 @@ In this section, we will focus on **SELECT** and **FROM** clause
 </details>
 
 <details>
-  <summary>Querying Data : [ ORDER BY ]</summary>
+  <summary>Querying Data : [ ORDER BY ] : Table </summary>
     
   | Command | Description |
   | --- | --- |  
@@ -138,7 +138,7 @@ In this section, we will focus on **SELECT** and **FROM** clause
 </details>
 
 <details>
-  <summary>Filtering Data : [ WHERE ]</summary>
+  <summary>Filtering Data : [ WHERE ] : Table </summary>
 
   | Command | Description |
   | ----- | ----- | 
@@ -177,7 +177,7 @@ In this section, we will focus on **SELECT** and **FROM** clause
 </details>
 
 <details>
-  <summary>Filtering Data : [ LIMIT | OFFSET ]</summary>  
+  <summary>Filtering Data : [ LIMIT | OFFSET ] : Table </summary>  
   
   | Command | Description |
   | --- | --- |
@@ -207,7 +207,7 @@ In this section, we will focus on **SELECT** and **FROM** clause
 </details>
 
 <details>
-  <summary>Aggregate Functions [ COUNT | MAX | MIN | SUM | AVG ] Table </summary>
+  <summary>Aggregate Functions [ COUNT | MAX | MIN | SUM | AVG ] : Table </summary>
 
   | Function | Command | Description |
   | --- | --- | --- |
