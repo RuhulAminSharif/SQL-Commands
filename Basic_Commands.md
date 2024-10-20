@@ -1,7 +1,7 @@
 # PostgreSQL Basics
 
 <details>
-  <summary> Section 01 : [ SHOW | CREATE | DROP | BACKUP | RESTORE | RENAME | COPY] : Database </summary>
+  <summary> Managing Database : [ SHOW | CREATE | DROP | BACKUP | RESTORE | RENAME | COPY ] </summary>
 <br><br>  
 
 | Command    | Description |  
@@ -19,7 +19,7 @@
 </details>
 
 <details>
-  <summary> Section 02: [ CREATE ] : Table </summary>
+  <summary> Database Definition: [ CREATE ]  </summary>
 <br><br>
 
 | Command | Description |
@@ -71,7 +71,7 @@ There are three main data types:
 </details>
 
 <details>
-<summary> Section 03: [ INSERT INTO ] : Table </summary>
+<summary> Modifying Database : [ INSERT INTO ] </summary>
   
 <br><br>
   
@@ -85,9 +85,7 @@ There are three main data types:
 </details>
 
 <details>
-  <summary>Section 04 - Querying Data : [ SELECT | SELECT DISTINCT | ORDER BY ] </summary>
-  <details>
-  <summary> Sub-section : [ SELECT | SELECT DISTINCT] : Table </summary>
+  <summary>Querying Data : [ SELECT | SELECT DISTINCT ] </summary>
 
   The SELECT statement has the following clauses:
   - Select distinct rows using **DISTINCT** operator.
@@ -106,9 +104,11 @@ In this section, we will focus on **SELECT** and **FROM** clause
   |**SELECT** column1, column2, ...<br> **FROM** table_name ;| Used to select data from a database.The data returned is stored in a result table.|
   |**SELECT** * <br> **FROM** table_name|To see all the fields available in the table|
   |**SELECT** **DISTINCT** column1, column2, ... <br>**FROM** table_name;<br> <br>**SELECT** **DISTINCT**(column_name) **FROM** table_name;| Used to return only distinct (different) values. <br> **NOTE** : Inside a table, a column often contains many duplicate values; and sometimes we only want to list the different (distinct) values. <br> **Note:** The **DISTINCT** keyword operates on column(s)|
-  </details>
-  <details>
-  <summary>[ ORDER BY]</summary>
+
+</details>
+
+<details>
+  <summary>Querying Data : [ ORDER BY ]</summary>
     
   | Command | Description |
   | --- | --- |  
@@ -135,14 +135,10 @@ In this section, we will focus on **SELECT** and **FROM** clause
   FROM customer
   ORDER BY store_id DESC;
   ```
-  </details>
-
 </details>
 
 <details>
-  <summary> Section 05 - Filtering Data : [ WHERE | LIMIT | OFFSET ]</summary>
-  <details>
-  <summary>Sub-section : [ WHERE ]</summary>
+  <summary>Filtering Data : [ WHERE ]</summary>
 
   | Command | Description |
   | ----- | ----- | 
@@ -178,9 +174,10 @@ In this section, we will focus on **SELECT** and **FROM** clause
   WHERE first_name like 'Br%'
       AND last_name <> 'Motley';
   ```
-  </details>
-  <details>
-  <summary>Sub-section : [ LIMIT | OFFSET]</summary>  
+</details>
+
+<details>
+  <summary>Filtering Data : [ LIMIT | OFFSET ]</summary>  
   
   | Command | Description |
   | --- | --- |
@@ -207,16 +204,10 @@ In this section, we will focus on **SELECT** and **FROM** clause
   LIMIT 4
   OFFSET 3;
   ```
-  </details>
-  <details>
-  <summary>[ TO BE ADDED ]</summary>
-  </details>
-  <details>
-  <summary>[ TO BE ADDED ]</summary>
-  </details>
 </details>
+
 <details>
-  <summary>Section 06 - Aggregate Functions [ COUNT | MAX | MIN | SUM | AVG ] Table </summary>
+  <summary>Aggregate Functions [ COUNT | MAX | MIN | SUM | AVG ] Table </summary>
 
   | Function | Command | Description |
   | --- | --- | --- |
@@ -228,10 +219,9 @@ In this section, we will focus on **SELECT** and **FROM** clause
 </details>
 
 <details>
-  <summary>Section 07 - Operators [ Arithmetic | Comparison ] </summary>
+  <summary> Operators [ Arithmetic | Comparison ] </summary>
 
-  <details>
-  <summary>Arithmetic Operators(+,-,*,/,%)</summary>
+### Arithmetic Operators(+,-,*,/,%)
 
   | Command    | Description |
   | ----------- | ----------- |
@@ -240,9 +230,8 @@ In this section, we will focus on **SELECT** and **FROM** clause
   | * | Multiplication |
   | / | Division |
   | % | Modulo |
-  </details>
-  <details>
-  <summary>Comparison Operators(=, >, <, >=, <=, <>)</summary>
+  
+### Comparison Operators(=, >, <, >=, <=, <>)
 
   | Command    | Description |
   | ----------- | ----------- |
@@ -252,5 +241,5 @@ In this section, we will focus on **SELECT** and **FROM** clause
   | >= | Greater than or equal	|
   | <= |	Less than or equal |  
   | <>|	Not equal.<br>**Note**: In some versions of SQL this operator may be written as !=	|
-  </details>
+
 </details>
