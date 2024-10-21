@@ -101,10 +101,38 @@ In this section, we will focus on **SELECT** and **FROM** clause
   | Command    | Description |
   | ----------- | ----------- |  
   | **SELECT** select_list <br> **FROM** table_name | General statement for basic query <br> <b>Note : <b> Where clause is optional| 
-  |**SELECT** column1, column2, ...<br> **FROM** table_name ;| Used to select data from a database.The data returned is stored in a result table.|
-  |**SELECT** * <br> **FROM** table_name|To see all the fields available in the table|
-  |**SELECT** **DISTINCT** column1, column2, ... <br>**FROM** table_name;<br> <br>**SELECT** **DISTINCT**(column_name) **FROM** table_name;| Used to return only distinct (different) values. <br> **NOTE** : Inside a table, a column often contains many duplicate values; and sometimes we only want to list the different (distinct) values. <br> **Note:** The **DISTINCT** keyword operates on column(s)|
+  | **SELECT** **DISTINCT** column1 <br>**FROM** table_name; | Removes duplicate rows from a result set |
+  | **SELECT** **DISTINCT** column1, column2 <br>**FROM** table_name; | Removes duplicate rows from a result set by using the combination of values in both column1 and column2 columns for evaluating the duplicate. |
 
+**Note:**  
+- select list that can be a column or a list of columns in a table from which you want to retrieve data. If we specify a list of columns, we need to place a comma (,) between two columns to separate them. If we want to select data from all the columns of the table, we can use an asterisk (*) shorthand instead of specifying all the column names. The select list may also contain expressions or literal values.
+- The FROM clause is optional. If we are not querying data from any table, we can omit the FROM clause in the SELECT statement.
+- The **DISTINCT** keyword operates on column(s)
+
+**Execution Order:**  
+PostgreSQL evaluates the FROM clause before the SELECT clause in the SELECT statement: FROM -> SELECT
+
+**Examples:**  
+Find the first names of all customers from the customer table:
+```PostgreSQL
+SELECT first_name
+FROM customer;
+```
+Retrieve first name, last name, and email of customers:
+```PostgreSQL
+SELECT first_name, last_name, email
+FROM customer;
+```
+Retrieve data from all columns of the customer table:
+```PostgreSQL
+SELECT *
+FROM customer;
+```
+To find distinct values of all columns in a table:
+```PostgreSQL
+SELECT DISTINCT *
+FROM table_name;
+```
 </details>
 
 <details>
@@ -112,7 +140,8 @@ In this section, we will focus on **SELECT** and **FROM** clause
     
   | Command | Description |
   | --- | --- |  
-  | **SELECT** column1, column2, ... <br>**FROM** table_name <br> **ORDER BY**  sort_expression1 **ASC/DESC** , <br> sort_expression2 **ASC/DESC** | The ORDER BY clause allows to sort rows returned by a SELECT clause in ascending or descending order based on a sort expression |  
+  | **SELECT** select_list <br>**FROM** table_name <br> **ORDER BY**  <br>sort_expression1 **ASC/DESC** , <br> sort_expression2 **ASC/DESC** | The ORDER BY clause allows to sort rows returned by a SELECT clause in ascending or descending order based on a sort expression | 
+  | **ORDER BY** sort_expresssion [ASC or DESC] [NULLS FIRST or NULLS LAST] | In the database world, NULL is a marker that indicates the missing data or the data is unknown at the time of recording. When we sort rows that contain NULL, we can specify the order of NULL with other non-null values by using the NULLS FIRST or NULLS LAST option of the ORDER BY clause <br> <br> The **NULLS FIRST** option places NULL before other non-null values and the **NULL LAST** option places NULL after other non-null values. |
 
   **Execution Order:**  
   PostgreSQL evaluates the clauses in the SELECT statement in the following order: ``FROM``, ```SELECT```, and ```ORDER BY```  
@@ -121,19 +150,45 @@ In this section, we will focus on **SELECT** and **FROM** clause
   - Use **ASC** to sort in **ascending** order.
   - Use **DESC** to sort in **descending** order.
   - If we leave it blank, **ORDER BY** uses **ASC** by **default**.
+  - By default, **ASC** use NULLS LAST
+  - By default, **DESCSC** use NULLS FIRST
 
-  **Example:**  
-  Example - 01:
+  **Example:**   
+  Sort customers by their first names in ascending order:
+  ```PostgreSQL
+  SELECT first_name, last_name 
+  FROM customer
+  ORDER BY first_name ASC;
+  ```
+  OR, 
+   ```PostgreSQL
+  SELECT first_name, last_name 
+  FROM customer
+  ORDER BY first_name;
+  ```
+  
   ```PostgreSQL
   SELECT store_id, first_name, last_name 
   FROM customer
   ORDER BY store_id DESC, first_name ASC;
   ```
-  Example - 02:
+  Find store_id, first name and last name of all the customer ordered in descended value of store_id:
   ```PostgreSQL
   SELECT store_id, first_name, last_name 
   FROM customer
   ORDER BY store_id DESC;
+  ```
+  
+  ```PostgreSQL
+  SELECT num 
+  FROM sort_demo 
+  ORDER BY num NULLS FIRST;
+  ```
+
+  ```PostgreSQL
+  SELECT num 
+  FROM sort_demo 
+  ORDER BY num DESC NULLS LAST;
   ```
 </details>
 
