@@ -293,8 +293,66 @@ FROM customer;
 </details>
 
 <details>
-  <summary> Operators [ Arithmetic | Comparison ] </summary>
+  <summary> Operators [ Logical | Arithmetic | Comparison ] </summary>
 
+### Logical Operators (AND, OR)
+AND operator – combine two boolean expressions and return true if both expressions evaluate to true. <br>
+OR operator – combine two boolean expressions and return false if either expression evaluates to false.
+
+In PostgreSQL, a boolean value can have one of three values: true, false, and null.
+
+PostgreSQL uses ``true``, ``'t'``, ``'true'``, ``'y'``, ``'yes'``, ``'1'`` to represent true and ``false``, ``'f'``, ``'false'``, ``'n'``, ``'no'``, and ``'0'`` to represent false.
+
+A boolean expression is an expression that evaluates to a boolean value.
+
+For example, the expression 1=1 is a boolean expression that evaluates to true:
+```PostgreSQL
+SELECT 1 = 1 AS result;
+```
+**Explanation of AND operator:**  
+The basic syntax of the AND operator:
+```Postgresql
+expression1 AND expression2
+```
+In this syntax, expression1 and expression2 are boolean expressions that evaluate to true, false, or null.
+
+The AND operator returns true only if both expressions are true. It returns false if one of the expressions is false. Otherwise, it returns null.
+
+The following table shows the results of the AND operator when combining true, false, and null.
+| true | false | null | ANDed Result |
+| --- | --- | --- | --- |
+| true | false | null | true |
+| false | false | false | false |
+| null | false | null | null |
+
+Find the films that have a length greater than 180 and a rental rate less than 1:
+```Postgresql
+SELECT title, length, rental_rate
+FROM film
+WHERE length > 180 AND rental_rate < 1;
+```
+**Explanation of OR Operator:**
+The basic syntax of the OR operator:
+```Postgresql
+expression1 OR expression2
+```
+In this syntax, expression1 and expression2 are boolean expressions that evaluate to ``true``, ``false``, or ``null``.
+
+The OR operator returns true only if any of the expressions is true. It returns false if both expressions are false. Otherwise, it returns null.
+
+The following table shows the results of the AND operator when combining true, false, and null.
+| true | false | null | ANDed Result |
+| --- | --- | --- | --- |
+| true | true | true | true |
+| true | false | null | false |
+| true | null | null | null |
+
+Find the films that have a rental rate is 0.99 or 2.99
+```PostgreSQL
+SELECT title, rental_rate
+FROM film
+WHERE rental_rate = 0.99 OR rental_rate = 2.99;
+```
 ### Arithmetic Operators(+,-,*,/,%)
 
   | Command    | Description |
