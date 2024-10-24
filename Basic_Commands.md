@@ -85,9 +85,9 @@ There are three main data types:
 </details>
 
 <details>
-  <summary>Querying Data : [ SELECT | SELECT DISTINCT ] : Table </summary>
+  <summary>Querying Data : [ SELECT | SELECT DISTINCT | Column Alias ] : Table </summary>
 
-  The SELECT statement has the following clauses:
+The **SELECT** statement has the following clauses:
   - Select distinct rows using **DISTINCT** operator.
   - Sort rows using **ORDER BY** clause.
   - Filter rows using **WHERE** clause.
@@ -97,17 +97,21 @@ There are three main data types:
   - Join with other tables using joins such as **INNER JOIN**, **LEFT JOIN**, **FULL OUTER JOIN**, **CROSS JOIN** clauses.
   - Perform set operations using **UNION**, **INTERSECT**, and **EXCEPT**
 
-In this section, we will focus on **SELECT** and **FROM** clause
+In this section, we will focus on **SELECT** and **FROM** clause.
+
   | Command    | Description |
   | ----------- | ----------- |  
   | **SELECT** select_list <br> **FROM** table_name | General statement for basic query <br> <b>Note : <b> Where clause is optional| 
   | **SELECT** **DISTINCT** column1 <br>**FROM** table_name; | Removes duplicate rows from a result set |
-  | **SELECT** **DISTINCT** column1, column2 <br>**FROM** table_name; | Removes duplicate rows from a result set by using the combination of values in both column1 and column2 columns for evaluating the duplicate. |
+  | **SELECT** **DISTINCT** column1, column2 <br>**FROM** table_name; | Removes duplicate rows from a result set. <br>It uses the combination of values in both column1 and column2 columns for evaluating the duplicate. |
+  | **SELECT** column_name **AS** alias_name <br> **FROM** table_name <br><br> Or, <br><br> **SELECT** column_name alias_name <br> **FROM** table_name | The column_name is assigned an alias alias_name. <br>The **AS** keyword is optional so we can omit it like later command.<br>Both command will work as same |
+  | **SELECT** expression **AS** alias_name <br>**FROM** table_name; | |
 
 **Note:**  
 - select list that can be a column or a list of columns in a table from which you want to retrieve data. If we specify a list of columns, we need to place a comma (,) between two columns to separate them. If we want to select data from all the columns of the table, we can use an asterisk (*) shorthand instead of specifying all the column names. The select list may also contain expressions or literal values.
 - The FROM clause is optional. If we are not querying data from any table, we can omit the FROM clause in the SELECT statement.
 - The **DISTINCT** keyword operates on column(s)
+- If a column alias contains one or more spaces, we need to surround it with double quotes. ( ```column_name AS "alias name"```)
 
 **Execution Order:**  
 PostgreSQL evaluates the FROM clause before the SELECT clause in the SELECT statement: FROM -> SELECT
@@ -132,6 +136,21 @@ To find distinct values of all columns in a table:
 ```PostgreSQL
 SELECT DISTINCT *
 FROM table_name;
+```
+Retrieve first name, last name of customers where the last need to be shown as surname:
+```PostgreSQL
+SELECT first_name, last_name AS surname
+FROM customer;
+```
+Retrieve full_name of customers using first name, last name:
+```PostgreSQL
+SELECT first_name || ' ' || last_name AS full_name
+FROM customer;
+```
+Or, 
+```PostgreSQL
+SELECT first_name || ' ' || last_name AS "full name"
+FROM customer;
 ```
 </details>
 
