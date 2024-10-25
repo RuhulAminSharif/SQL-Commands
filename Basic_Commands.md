@@ -493,3 +493,211 @@ To match the % or _ itself, ESCAPE should be used.
   | <>|	Not equal.<br>**Note**: In some versions of SQL this operator may be written as !=	|
 
 </details>
+
+<details>
+  <summary>Joining Tables : [ TABLE ALIAS | INNER JOIN | FULL OUTER JOIN | LEFT OUTER JOIN | RIGHT OUTER JOIN | SELF JOIN | CROSS JOIN ] </summary>
+
+## Table Alias
+A table alias is a feature in SQL that allows to assign a temporary name to a table during the execution of a query.
+| Command | Description | 
+| --- | --- | 
+| table_name AS alias_name | It will renamed the name of the table "table_name" to "alias_name" |
+
+**Note:**  
+- The AS keyword is optional, meaning that we can omit it like this: ```table_name alias_name```
+
+To retrieve five titles from the ``film`` table:
+```PostgreSQL
+SELECT f.title
+FROM film AS f
+ORDER BY f.title
+LIMIT 5;
+```
+## Inner Join 
+
+| Command | Description |
+| --- | --- | 
+| **SELECT** select_list <br>**FROM** TableA **INNER JOIN** TableB <br>**ON** TableA.column_name = TableB.column_name; | Inner join produces only the set of records that match in both TableA and TableB based on the column name. |
+
+![inner_join](images\inner_join.png)  
+**Note:**   
+- To make the query shorter, we can use table aliases:
+  ```PostgreSQL
+  SELECT
+    select_list
+  FROM
+    table1 t1 
+      INNER JOIN table2 t2 ON t1.column_name = t2.column_name;
+  ```
+- If the columns for matching share the same name, we can use the USING syntax:
+  ```PostgreSQL
+  SELECT
+    select_list
+  FROM
+    table1 t1 INNER JOIN table2 t2 USING(column_name);
+  ```
+**Example:**  
+A customer walks in and is a huge fan of the actor "Nick Wahlberg" and wants to know which movies he is in. <br>
+Get a list of all the movies "Nick Wahlberg" has been in.
+```PostgreSQL
+select
+	title, first_name, last_name 
+from 
+	film_actor
+		inner join actor on	actor.actor_id = film_actor.actor_id
+		inner join film on film.film_id = film_actor.film_id
+where
+	first_name = 'Nick'
+	and last_name = 'Wahlberg';
+```
+California sales tax laws have changed and we need to alert our customers to this through email. <br> 
+What are the emails of the customers who live in California?
+```PostgreSQL
+select district, email
+from customer inner join address
+	on customer.address_id = address.address_id
+where district = 'California';
+```
+## Full Outer Join
+
+| Command | Description |
+| --- | --- | 
+| **SELECT** select_list <br>**FROM** TableA **FULL OUTER JOIN** TableB <br>**ON** TableA.column_name = TableB.column_name;  | Full outer join produces the set of all records in Table A and Table B,<br>with matching records from both sides where available.<br>If there is no match, the missing side will contain null. |
+![full_outer_join](images\full_outer_join.png) 
+
+To produce the set of records unique to Table A and Table B, we perform the same full outer join, then exclude the records we don't want from both sides via a where clause.
+```PostgreSQL
+SELECT * FROM TableA
+FULL OUTER JOIN TableB
+ON TableA.name = TableB.name
+WHERE TableA.id IS null
+OR TableB.id IS null
+```
+![unique](images\unique_join.png)  
+
+```PostgreSQL
+CREATE TABLE departments (
+  department_id serial PRIMARY KEY,
+  department_name VARCHAR (255) NOT NULL
+);
+CREATE TABLE employees (
+  employee_id serial PRIMARY KEY,
+  employee_name VARCHAR (255),
+  department_id INTEGER
+);
+```
+Based on this, find the department that does not have any employees:
+```PostgreSQL
+select
+  department_id
+from
+  departments dept
+    full outer join employees emp on dept.department_id = emp.department_id
+where
+  emp.employee_name is null
+```
+
+## Left Outer Join
+
+| Command | Description |
+| --- | --- | 
+| **SELECT** select_list <br>**FROM** TableA **LEFT OUTER JOIN** TableB <br>**ON** TableA.column_name = TableB.column_name;  | Left outer join produces a complete set of records from Table A,<br> with the matching records (where available) in Table B.<br>If there is no match, the right side will contain null. |
+![left_outer_join](images\left_outer_join.png)  
+
+**Note:**
+- If the columns for joining two tables have the same name, we can use the USING syntax:
+  ```PostgreSQL
+  SELECT
+    select_list
+  FROM
+    table1
+      LEFT JOIN table2 USING (column_name);
+  ------------------------------------------------------------
+  SELECT
+  f.film_id,
+  f.title,
+  i.inventory_id
+  FROM
+    film f
+      LEFT JOIN inventory i USING (film_id)
+  ORDER BY
+    i.inventory_id;
+  ```
+
+To produce the set of records only in Table A, but not in Table B, we perform the same left outer join, then exclude the records we don't want from the right side via a where clause.
+```PostgreSQL
+SELECT * FROM TableA
+LEFT OUTER JOIN TableB
+ON TableA.name = TableB.name
+WHERE TableB.id IS null
+```
+![left_outer_left](images\left_outer_join2.png) 
+
+Identify the films that are not present in the inventory:
+```PostgreSQL
+SELECT
+  f.film_id,
+  f.title,
+  i.inventory_id
+FROM
+  film f
+  LEFT JOIN inventory i USING (film_id)
+WHERE
+  i.film_id IS NULL
+ORDER BY
+  f.title;
+```
+
+## Self Join
+A self-join is a regular join that joins a table to itself. In practice, we typically use a self-join to query hierarchical data or to compare rows within the same table.
+
+Syntax:  
+```PostgreSQL
+SELECT
+  select_list
+FROM
+  table_name t1
+    INNER JOIN table_name t2 ON join_predicate;
+-------------------------------------------------alternative
+SELECT
+  select_list
+FROM
+  table_name t1
+    LEFT JOIN table_name t2 ON join_predicate;
+```
+
+Find all pairs of films that have the same length:
+```PostgreSQL
+select
+  f1.title,
+  f2.title,
+  f1.length
+from 
+  film f1
+    inner join film f2 on f1.length = f2.length and f1.film_id > f2.film_id
+```
+
+## Cross Join
+A cross-join allows to join two tables by combining each row from the first table with every row from the second table, resulting in a complete combination of all rows.
+
+**Note**
+- A cross-join produces the cartesian product of rows in two tables.
+- If table1 has ``n`` rows and table2 has ``m`` rows, the CROSS JOIN will return a result set that has ``nxm`` rows.
+
+**Syntax:**  
+```PostgreSQL
+SELECT
+  select_list
+FROM
+  table1
+    CROSS JOIN table2;
+--------------------alternative
+SELECT
+  select_list
+FROM
+  table1,table2;
+```
+
+The query ```SELECT * FROM T1 CROSS JOIN T2;``` will produce the following output:  git commit -m "added joins with example" -m "added inner join"  -m "added full outer join" -m "added left outer join" -m "added left outer join"
+![cross_join](images\cross_join.jpeg)
+</details>
