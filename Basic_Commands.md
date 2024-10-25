@@ -708,3 +708,133 @@ FROM
 The query ```SELECT * FROM T1 CROSS JOIN T2;``` will produce the following output:  
 ![cross_join](images/cross_join.jpeg)
 </details>
+
+<details>
+  <summary>Grouping Data : [ GROUP BY | HAVING ] </summary>
+
+## GROUP BY
+- Divide rows of a result set into groups and optionally apply an aggregate function to each group.
+
+The basic syntax of the ``GROUP BY`` clause:
+```PostgreSQL
+SELECT
+  column1,
+  column2,
+  ...,
+  aggregate_function(column3)
+FROM
+  table_name
+GROUP BY
+  column1,
+  column2,
+  ...;
+```
+In this syntax,
+- First, select the columns that we want to group such as ``column1`` and ``column2``, and column that you want to apply an aggregate function (``column3``).
+- Second, list the columns that we want to group in the ``GROUP BY`` clause.
+
+**Execution Order:** PostgreSQL evaluates the ``GROUP BY`` clause after the ``FROM`` and ``WHERE`` clauses and before the ``HAVING`` ``SELECT``, ``DISTINCT``, ``ORDER BY`` and ``LIMIT`` clauses.
+
+**Example:**  
+Retrieve the customer_id from the payment table:
+```PostgreSQL
+SELECT customer_id
+FROM customer
+GROUP BY customer_id
+ORDER BY customer_id;
+```
+Retrieve the total payment paid by each customer:
+```PostgreSQL
+SELECT customer_id, SUM(amount)
+FROM payment
+GROUP BY customer_id
+ORDER BY customer_id;
+```
+Retrieve the total payment for each customer and display the customer name and amount:
+```PostgreSQL
+SELECT first_name || ' ' || last_name AS full_name, SUM(amount)
+FROM
+  payment
+    INNER JOIN customer ON payment.customer_id = customer.customer_id
+GROUP BY full_name
+ORDER BY SUM(amount) DESC;
+
+```
+Count the number of payments processed by each staff:
+```PostgreSQL
+SELECT staff_id, COUNT(*)
+FROM
+  payment
+GROUP BY staff_id;
+```
+
+## HAVING
+HAVING clause specifies a search condition for a group or an aggregate.
+
+The basic syntax is as follows:
+```PostgreSQL
+SELECT 
+  column1,
+  aggregate_function(column2)
+FROM
+  table_name
+GROUP BY 
+  column1
+HAVING
+  condition;
+```
+In this syntax:
+- First, the ``GROUP BY`` clause groups rows into groups by the values in the ``column1``.
+- Then, the ``HAVING`` clause filters the groups based on the ``condition``.
+
+**Note:**
+- Besides the GROUP BY clause, we can also include other clauses such as JOIN and LIMIT in the statement that uses the HAVING clause.
+
+### HAVING vs WHERE
+- The ``WHERE`` clause filters the rows based on a specified condition whereas the ``HAVING`` clause filter groups of rows according to a specified condition.
+- In other words, we can apply the condition in the ``WHERE`` clause to the rows while we need to apply the condition in the ``HAVING`` clause to the groups of rows.
+
+Find the customers who have been spending more than 200:
+```PostgreSQL
+SELECT
+  customer_id, SUM(amount)
+FROM 
+  payment
+GROUP BY 
+  customer_id
+HAVING SUM(amount) > 200
+```
+
+Find the stores that has more than 300 customers:
+```PostgreSQL
+SELECT
+  store_id, COUNT(customer_id)
+FROM
+  customer
+GROUP BY
+  store_id
+HAVING COUNT(customer_id) > 300
+```
+We are launching a platinum service for our most loyal customers. We will assign platinum status to customers that have had 40 or more transaction payments. What customer_ids are eligible for platinum status?
+```PostgreSQL
+SELECT
+  customer_id, COUNT(amount)
+FROM
+  payment
+GROUP BY
+  customer_id
+HAVING COUNT(amount) >= 40
+```
+What are the customer ids of customers who have spent more than $100 in payment transactions with our staff_id member 2?
+```PostgreSQL
+SELECT
+  customer_id, staff_id, SUM(amount)
+FROM
+  payment
+WHERE 
+  staff_id = 2
+GROUP BY
+  customer_id
+HAVING SUM(amount) > 100
+```
+</details>
