@@ -519,7 +519,7 @@ LIMIT 5;
 | --- | --- | 
 | **SELECT** select_list <br>**FROM** TableA **INNER JOIN** TableB <br>**ON** TableA.column_name = TableB.column_name; | Inner join produces only the set of records that match in both TableA and TableB based on the column name. |
 
-![inner_join](images\inner_join.png)  
+![inner_join](images/inner_join.png)  
 **Note:**   
 - To make the query shorter, we can use table aliases:
   ```PostgreSQL
@@ -563,7 +563,7 @@ where district = 'California';
 | Command | Description |
 | --- | --- | 
 | **SELECT** select_list <br>**FROM** TableA **FULL OUTER JOIN** TableB <br>**ON** TableA.column_name = TableB.column_name;  | Full outer join produces the set of all records in Table A and Table B,<br>with matching records from both sides where available.<br>If there is no match, the missing side will contain null. |
-![full_outer_join](images\full_outer_join.png) 
+![full_outer_join](images/full_outer_join.png) 
 
 To produce the set of records unique to Table A and Table B, we perform the same full outer join, then exclude the records we don't want from both sides via a where clause.
 ```PostgreSQL
@@ -573,7 +573,7 @@ ON TableA.name = TableB.name
 WHERE TableA.id IS null
 OR TableB.id IS null
 ```
-![unique](images\unique_join.png)  
+![unique](images/unique_join.png)  
 
 ```PostgreSQL
 CREATE TABLE departments (
@@ -602,7 +602,7 @@ where
 | Command | Description |
 | --- | --- | 
 | **SELECT** select_list <br>**FROM** TableA **LEFT OUTER JOIN** TableB <br>**ON** TableA.column_name = TableB.column_name;  | Left outer join produces a complete set of records from Table A,<br> with the matching records (where available) in Table B.<br>If there is no match, the right side will contain null. |
-![left_outer_join](images\left_outer_join.png)  
+![left_outer_join](images/left_outer_join.png)  
 
 **Note:**
 - If the columns for joining two tables have the same name, we can use the USING syntax:
@@ -631,7 +631,7 @@ LEFT OUTER JOIN TableB
 ON TableA.name = TableB.name
 WHERE TableB.id IS null
 ```
-![left_outer_left](images\left_outer_join2.png) 
+![left_outer_left](images/left_outer_join2.png) 
 
 Identify the films that are not present in the inventory:
 ```PostgreSQL
@@ -698,6 +698,6 @@ FROM
   table1,table2;
 ```
 
-The query ```SELECT * FROM T1 CROSS JOIN T2;``` will produce the following output:  git commit -m "added joins with example" -m "added inner join"  -m "added full outer join" -m "added left outer join" -m "added left outer join"
-![cross_join](images\cross_join.jpeg)
+The query ```SELECT * FROM T1 CROSS JOIN T2;``` will produce the following output:  
+![cross_join](images/cross_join.jpeg)
 </details>
