@@ -83,10 +83,17 @@ There are three main data types:
 
   <br> 
 </details>
+<details>
+  <summary>Execution Order : [ SELECT with all clause] </summary>
 
+## Execution Order
+PostgreSQL evaluates the select statements with all clause as follows:   
+``FROM`` -> ``WHERE`` -> ``GROUP BY`` -> ``HAVING`` -> ``SELECT`` -> ``DISTINCT`` -> ``ORDER BY`` -> ``LIMIT``
+</details>
 <details>
   <summary>Querying Data : [ SELECT | SELECT DISTINCT | Column Alias ] : Table </summary>
 
+## SELECT 
 The **SELECT** statement has the following clauses:
   - Select distinct rows using **DISTINCT** operator.
   - Sort rows using **ORDER BY** clause.
@@ -95,7 +102,7 @@ The **SELECT** statement has the following clauses:
   - Group rows into groups using **GROUP BY** clause.
   - Filter groups using **HAVING** clause.
   - Join with other tables using joins such as **INNER JOIN**, **LEFT JOIN**, **FULL OUTER JOIN**, **CROSS JOIN** clauses.
-  - Perform set operations using **UNION**, **INTERSECT**, and **EXCEPT**
+  - Perform set operations using **UNION**, **INTERSECT**, and **EXCEPT** 
 
 In this section, we will focus on **SELECT** and **FROM** clause.
 
