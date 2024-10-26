@@ -840,9 +840,9 @@ HAVING SUM(amount) > 100
 </details>
 
 <details>
-  <summary>Set Operations : [ Union | INTERSECT ] </summary>
+  <summary>Set Operations : [ Union | INTERSECT | EXCEPT] </summary>
 
-## Union
+## UNION
 The ``UNION`` operator allows to combine the result sets of two or more ``SELECT`` statements into a single result set.
 
 The basic syntax of ``UNION`` is as follows:
@@ -923,7 +923,7 @@ ORDER BY title
 **Note:**
 - ORDER BY in UNION must be placed at the last
 
-## Intersect
+## INTERSECT
 ``INTERSECT`` operator combines result sets of two ``SELECT`` statements into a single result set. The ``INTERSECT`` operator returns a result set containing rows available in both results sets.
 
 The basic syntax of ``INTERSECT`` is as follows:
@@ -957,6 +957,34 @@ SELECT * FROM top_rated_films
 INTERSECT
 SELECT * FROM most_popular_films
 ORDER BY title
+```
+## EXCEPT
+The ``EXCEPT`` operator returns rows by comparing the result sets of two or more queries. The ``EXCEPT`` operator returns distinct rows from the first (left) query that are not in the second (right) query. 
+
+The basic syntax of ``EXCEPT`` is as follows:
+```PostgreSQL
+SELECT select_list
+FROM A
+EXCEPT
+SELECT select_list
+FROM B
+-------------------with order by
+SELECT select_list
+FROM A
+EXCEPT
+SELECT select_list
+FROM B
+ORDER BY sort_expression
+```
+In this syntax,
+- The number and the order of the columns in the select list of both queries must be the same
+- The data types of the columns in select lists of the queries must be compatible
+
+Find the top-rated films that are not popular:
+```PostgreSQL
+SELECT * FROM top_rated_films
+EXCEPT
+SELECT * FROm most_popular_films
 ```
 
 </details>
