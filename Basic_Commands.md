@@ -988,3 +988,182 @@ SELECT * FROm most_popular_films
 ```
 
 </details>
+
+<details>
+  <summary>Sub-query : [ sub-query | ANY/SOME | ALL | EXISTS ]</summary>
+
+## Sub-query
+A sub-query is a query nested within another query. A sub-query is also known as an inner query or nested query. A sub-query can be useful for retrieving data that will be used by the main query as a condition for further data selection.
+
+The basic syntax of the sub-query is as follows:
+```PostgreSQL
+SELECT
+  select_list
+FROM 
+  table1
+WHERE 
+  columnA operator (
+    SELECT 
+      columnB
+    FROM 
+      table2
+    WHERE
+      condition
+  );
+```
+In this syntax: 
+- the sub-query is enclosed within parentheses and is executed first
+- The main query will use the result of the sub-query to filter data in the ``WHERE`` clause.
+
+Retrieve the all the cities of the country United States:
+```PostgreSQL
+SELECT
+  city
+FROM 
+  city
+WHERE 
+  country_id = (
+    SELECT 
+      country_id
+    FROM
+      country
+    WHERE
+      country = 'United States';
+  )
+ORDER BY
+  city;
+```
+Find the titles of the film with the category Action:
+```PostgreSQL
+SELECT
+  film_id, title
+FROM 
+  film
+WHERE 
+  film_id IN (
+    SELECT 
+      film_id
+    FROM
+      film_category
+	  	  inner join category on film_category.category_id = category.category_id
+	  WHERE category.name = 'Action'
+  )
+ORDER BY
+	film_id;
+```
+
+```PostgreSQL
+SELECT 
+	film_id, title, length, rating
+FROM film AS f
+WHERE length > (
+	SELECT  AVG(length)
+	FROM film
+	WHERE rating = f.rating
+)
+```
+## ANY/SOME
+The PostgreSQL ANY operator compares a value with a set of values returned by a sub-query. It is commonly used in combination with comparison operators such as =, <, >, <=, >=, and <>.  
+
+The basic syntax for ANY is as follows:
+```PostgreSQL
+expression operator ANY(sub-query)
+```
+In this syntax:
+- ``expression`` is a value that you want to compare.
+- ``operator`` is a comparison operator including =, <, >, <=, >=, and <>.
+- ``sub-query`` is a sub-query that returns a set of values to compare against. It must return exactly one column.
+
+**Note**
+- The ``ANY`` operator returns ``true`` if the comparison returns ``true`` for at least one of the values in the set, and ``false`` otherwise.
+- If the sub-query returns an empty set, the result of ``ANY`` comparison is always ``true``.
+
+
+**Note:**
+- ``SOME`` is a synonym for ``ANY``, which means that we can use them interchangeably.
+
+## ALL
+``ALL`` operator allows you to compare a value with all values in a set returned by a sub-query.
+```PostgreSQL
+expression operator ALL(sub-query)
+```
+In this syntax:
+- The ``ALL`` operator must be preceded by a comparison operator such as equal (=), not equal (<>), greater than (>), greater than or equal to (>=), less than (<), and less than or equal to (<=).
+- The ``ALL`` operator must be followed by a sub-query which also must be surrounded by the parentheses.
+
+**Note:**
+- If the sub-query returns a non-empty result set, the ALL operator works as follows:
+  - value > ALL (sub-query) returns true if the value is greater than the biggest value returned by the sub-query
+  - value >= ALL (sub-query) returns true if the value is greater than or equal to the biggest value returned by the sub-query.
+  - value < ALL (sub-query) returns true if the value is less than the smallest value returned by the sub-query.
+  - value <= ALL (sub-query) returns true if the value is less than or equal to the smallest value returned by the sub-query.
+  - value = ALL (sub-query) returns true if the value equals every value returned by the sub-query.
+  - value != ALL (sub-query) returns true if the value does not equal any value returned by the sub-query.
+- If the sub-query returns no row, then the ALL operator always evaluates to true.
+
+
+## EXISTS
+The EXISTS operator is a boolean operator that checks the existence of rows in a sub-query.
+
+Here’s the basic syntax of the EXISTS operator:
+```PostgreSQL
+EXISTS (sub-query)
+```
+```PostgreSQL
+SELECT
+  select_list
+FROM
+  table1
+WHERE
+  EXISTS(
+    SELECT
+      select_list
+    FROM
+      table2
+    WHERE
+      condition
+  );
+```
+**Note:**
+- If the sub-query returns at least one row, the EXISTS operator returns true. If the sub-query returns no row, the EXISTS returns false.
+- if the sub-query returns NULL, the EXISTS operator returns true.
+- The result of EXISTS operator depends on whether any row is returned by the sub-query, and not on the row contents. Therefore, columns that appear in the select_list of the sub-query are not important.
+
+Check if the payment value is zero exists in the payment table:
+```PostgreSQL
+SELECT 
+  EXISTS (
+    SELECT 1
+    FROM payment
+    WHERE amount = 0
+  );
+```
+Find customers who have paid at least one rental with an amount greater than 11:
+```PostgreSQL
+SELECT first_name, last_name
+FROM customer AS c
+WHERE EXISTS(
+  SELECT 1
+  FROM payment AS p
+  WHERE c.customer_id = p.customer_id
+    AND amount > 11
+)
+ORDER BY
+  first_name,
+  last_name;
+```
+Find customers who have not made any payment more than 11.
+```PostgreSQL
+SELECT first_name, last_name
+FROM customer AS c
+WHERE NOT EXISTS(
+  SELECT 1
+  FROM payment AS p
+  WHERE c.customer_id = p.customer_id
+    AND amount > 11
+)
+ORDER BY
+  first_name,
+  last_name;
+```
+</details>
