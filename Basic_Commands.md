@@ -838,3 +838,88 @@ GROUP BY
 HAVING SUM(amount) > 100
 ```
 </details>
+
+<details>
+  <summary>Set Operations : [ Union ] </summary>
+
+## Union
+The ``UNION`` operator allows to combine the result sets of two or more ``SELECT`` statements into a single result set.
+
+The basic syntax of ``UNION`` is as follows:
+```PostgreSQL
+SELECT select_list
+FROM A
+UNION
+SELECT select_list
+FROM B
+```
+In this syntax,
+- The number and the order of the columns in the select list of both queries must be the same
+- The data types of the columns in select lists of the queries must be compatible
+
+**Note:**  
+- The UNION operator removes all duplicate rows from the combined data set.
+- To retain the duplicate rows, we need to use the UNION ALL instead
+The syntax of the ``UNION ALL`` operator:
+```PostgreSQL
+SELECT select_list
+FROM A
+UNION ALL
+SELECT select_list
+FROM B
+```
+
+### Examples
+```PostgreSQL
+CREATE TABLE top_rated_films(
+  title VARCHAR NOT NULL,
+  release_year SMALLINT
+);
+
+CREATE TABLE most_popular_films(
+  title VARCHAR NOT NULL,
+  release_year SMALLINT
+);
+
+INSERT INTO top_rated_films(title, release_year)
+VALUES
+   ('The Shawshank Redemption', 1994),
+   ('The Godfather', 1972),
+   ('The Dark Knight', 2008),
+   ('12 Angry Men', 1957);
+
+INSERT INTO most_popular_films(title, release_year)
+VALUES
+  ('An American Pickle', 2020),
+  ('The Godfather', 1972),
+  ('The Dark Knight', 2008),
+  ('Greyhound', 2020);
+```
+
+Retrieve all the films those are most popular and top rated films:
+```PostgreSQL
+------------------------------with duplicates
+SELECT * FROM top_rated_films
+UNION
+SELECT * FROM most_popular_films
+------------------------------without duplicates
+SELECT * FROM top_rated_films
+UNION ALL
+SELECT * FROM most_popular_films
+```
+Retrieve all the films those are most popular and top rated films sorted by title:
+```PostgreSQL
+------------------------------with duplicates
+SELECT * FROM top_rated_films
+UNION
+SELECT * FROM most_popular_films
+ORDER BY title
+------------------------------without duplicates
+SELECT * FROM top_rated_films
+UNION ALL
+SELECT * FROM most_popular_films
+ORDER BY title
+```
+**Note:**
+- ORDER BY in UNION must be placed at the last
+</details>
