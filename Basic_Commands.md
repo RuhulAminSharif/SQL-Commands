@@ -840,7 +840,7 @@ HAVING SUM(amount) > 100
 </details>
 
 <details>
-  <summary>Set Operations : [ Union ] </summary>
+  <summary>Set Operations : [ Union | INTERSECT ] </summary>
 
 ## Union
 The ``UNION`` operator allows to combine the result sets of two or more ``SELECT`` statements into a single result set.
@@ -896,7 +896,7 @@ VALUES
   ('Greyhound', 2020);
 ```
 
-Retrieve all the films those are most popular and top rated films:
+Retrieve all the films those are most popular or top rated films:
 ```PostgreSQL
 ------------------------------with duplicates
 SELECT * FROM top_rated_films
@@ -907,7 +907,7 @@ SELECT * FROM top_rated_films
 UNION ALL
 SELECT * FROM most_popular_films
 ```
-Retrieve all the films those are most popular and top rated films sorted by title:
+Retrieve all the films those are most popular or top rated films sorted by title:
 ```PostgreSQL
 ------------------------------with duplicates
 SELECT * FROM top_rated_films
@@ -922,4 +922,41 @@ ORDER BY title
 ```
 **Note:**
 - ORDER BY in UNION must be placed at the last
+
+## Intersect
+``INTERSECT`` operator combines result sets of two ``SELECT`` statements into a single result set. The ``INTERSECT`` operator returns a result set containing rows available in both results sets.
+
+The basic syntax of ``INTERSECT`` is as follows:
+```PostgreSQL
+SELECT select_list
+FROM A
+INTERSECT
+SELECT select_list
+FROM B
+-------------------with order by
+SELECT select_list
+FROM A
+INTERSECT
+SELECT select_list
+FROM B
+ORDER BY sort_expression
+```
+In this syntax,
+- The number and the order of the columns in the select list of both queries must be the same
+- The data types of the columns in select lists of the queries must be compatible
+
+Retrieve all the films those are most popular and top rated films:
+```PostgreSQL
+SELECT * FROM top_rated_films
+INTERSECT
+SELECT * FROM most_popular_films
+```
+Retrieve all the films those are most popular and top rated films sorted by title:
+```PostgreSQL
+SELECT * FROM top_rated_films
+INTERSECT
+SELECT * FROM most_popular_films
+ORDER BY title
+```
+
 </details>
