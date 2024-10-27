@@ -855,6 +855,45 @@ RIGHT JOIN table2 USING (column_name);
   |**MIN()** | **SELECT** **MIN**(column_name) <br> **FROM** table_name ;| Returns the minimum value from the records.|
   |**MAX()** | **SELECT** **MAX**(column_name) <br> **FROM** table_name ;| Returns the maximum value from the records.|
   |**SUM()** | **SELECT** **SUM**(column_name) <br> **FROM** table_name | Returns the total sum of the specified column |
+
+Calculate the average replacement cost of all films:
+```PostgreSQL
+SELECT ROUND(AVG(replacement_cost),2) AS avg_replacement_cost
+FROM film
+```
+Count number of films:
+```PostgreSQL
+SELECT COUNT(*)
+FROM film
+```
+Find maximum replacement cost of films:
+```PostgreSQL
+SELECT MAX(replacement_cost) AS max_replacement_cost
+FROM film
+```
+Find the films that have the maximum replacement cost:
+```PostgreSQL
+SELECT film_id, title
+FROM film
+WHERE
+  replacement_cost = (
+    SELECT MAX(replacement_cost)
+    FROM film
+  )
+ORDER BY title
+```
+Find minimum replacement cost of films:
+```PostgreSQL
+SELECT MIN(replacement_cost) AS min_replacement_cost
+FROM film
+```
+Find the total length of films grouped by film’s rating:
+```PostgreSQL
+SELECT rating, SUM(length)
+FROM film
+GROUP BY rating
+ORDER BY rating;
+```
 </details>
 
 <details>
