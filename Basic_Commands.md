@@ -544,7 +544,7 @@ WHERE address2 IS NOT NULL;
 </details>
 
 <details>
-  <summary>Joining Tables : [ TABLE ALIAS | INNER JOIN | FULL OUTER JOIN | LEFT OUTER JOIN | RIGHT OUTER JOIN | SELF JOIN | CROSS JOIN | NATURAL JOIN] </summary>
+  <summary>Joining Tables : [ TABLE ALIAS | INNER JOIN | FULL OUTER JOIN | LEFT JOIN | RIGHT JOIN | SELF JOIN | CROSS JOIN | NATURAL JOIN] </summary>
 
 ## Table Alias
 A table alias is a feature in SQL that allows to assign a temporary name to a table during the execution of a query.
