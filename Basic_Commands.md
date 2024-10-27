@@ -507,6 +507,41 @@ To match the % or _ itself, ESCAPE should be used.
 (Read from o)
 
 </details>
+
+<details>
+  <summary>Filtering Data : [ IS NULL ] : Table </summary>
+
+## NULL
+NULL means missing information or not applicable. NULL is not a value, therefore, you cannot compare it with other values like numbers or strings.
+
+The comparison of NULL with a value will always result in NULL. Additionally, NULL is not equal to NULL so the following expression returns NULL:
+```PostgreSQL
+SELECT null = null AS result;
+```
+
+## IS NULL
+To check if a value is NULL or not, we cannot use the equal to (``=``) or not equal to (``<>``) operators.`Instead, we use ``IS NULL`` or ``IS NOT NULL`` operator
+```PostgreSQL
+value IS NULL
+---------------
+value IS NOT NULL
+```
+- The IS ``NULL`` operator returns true if the ``value`` is NULL or false otherwise.
+- The ``IS NOT NULL`` operator returns true if the ``value`` is not NULL or false otherwise.
+
+Find the addresses from the address table that the address2 column contains NULL:
+```PostgreSQL
+SELECT address, address2
+FROM address
+WHERE address2 IS NULL;
+```
+Retrieve the address that has the address2 not NULL:
+```PostgreSQL
+SELECT address, address2
+FROM address
+WHERE address2 IS NOT NULL;
+```
+</details>
 <details>
   <summary>Aggregate Functions [ COUNT | MAX | MIN | SUM | AVG ] : Table </summary>
 
