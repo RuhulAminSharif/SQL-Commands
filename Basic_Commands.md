@@ -115,7 +115,7 @@ In this section, we will focus on **SELECT** and **FROM** clause.
   | **SELECT** expression **AS** alias_name <br>**FROM** table_name; | |
 
 **Note:**  
-- select list that can be a column or a list of columns in a table from which you want to retrieve data. If we specify a list of columns, we need to place a comma (,) between two columns to separate them. If we want to select data from all the columns of the table, we can use an asterisk (*) shorthand instead of specifying all the column names. The select list may also contain expressions or literal values.
+- select list that can be a column or a list of columns in a table from which we want to retrieve data. If we specify a list of columns, we need to place a comma (,) between two columns to separate them. If we want to select data from all the columns of the table, we can use an asterisk (*) shorthand instead of specifying all the column names. The select list may also contain expressions or literal values.
 - The FROM clause is optional. If we are not querying data from any table, we can omit the FROM clause in the SELECT statement.
 - The **DISTINCT** keyword operates on column(s)
 - If a column alias contains one or more spaces, we need to surround it with double quotes. ( ```column_name AS "alias name"```)
@@ -495,7 +495,7 @@ WHERE first_name LIKE '%er%'
 ORDER BY first_name;
 ```
 
-### What if you want to match the character % or _ itself:
+### What if we want to match the character % or _ itself:
 Then, The solution is use ESCAPE option.
 
 For example, a column of table contains info like:  
@@ -512,7 +512,7 @@ To match the % or _ itself, ESCAPE should be used.
   <summary>Filtering Data : [ IS NULL ] : Table </summary>
 
 ## NULL
-NULL means missing information or not applicable. NULL is not a value, therefore, you cannot compare it with other values like numbers or strings.
+NULL means missing information or not applicable. NULL is not a value, therefore, we cannot compare it with other values like numbers or strings.
 
 The comparison of NULL with a value will always result in NULL. Additionally, NULL is not equal to NULL so the following expression returns NULL:
 ```PostgreSQL
@@ -542,48 +542,9 @@ FROM address
 WHERE address2 IS NOT NULL;
 ```
 </details>
-<details>
-  <summary>Aggregate Functions [ COUNT | MAX | MIN | SUM | AVG ] : Table </summary>
-
-  | Function | Command | Description |
-  | --- | --- | --- |
-  |**COUNT()** | **COUNT(column_name)** or **COUNT(*)** <br> <br>**SELECT** **COUNT**(column_name) <br> **FROM** table_name;| Returns the number of records returned by a select query.<br>**Note:** NULL values are not counted.|
-  |**AVG()** | **SELECT** **AVG**(column_name) <br> **FROM** table_name ; | Return the average value for the given column.|
-  |**MIN()** | **SELECT** **MIN**(column_name) <br> **FROM** table_name ;| Returns the minimum value from the records.|
-  |**MAX()** | **SELECT** **MAX**(column_name) <br> **FROM** table_name ;| Returns the maximum value from the records.|
-  |**SUM()** | **SELECT** **SUM**(column_name) <br> **FROM** table_name | Returns the total sum of the specified column |
-</details>
 
 <details>
-  <summary> Operators [ Logical | Arithmetic | Comparison ] </summary>
-
-### Logical Operators (AND, OR)
-
-### Arithmetic Operators(+,-,*,/,%)
-
-  | Command    | Description |
-  | ----------- | ----------- |
-  | + | Addition |
-  | - | Subtraction |
-  | * | Multiplication |
-  | / | Division |
-  | % | Modulo |
-  
-### Comparison Operators(=, >, <, >=, <=, <>)
-
-  | Command    | Description |
-  | ----------- | ----------- |
-  | = | Equal |
-  | > | Greater than |
-  | < | Less than	|
-  | >= | Greater than or equal	|
-  | <= |	Less than or equal |  
-  | <>|	Not equal.<br>**Note**: In some versions of SQL this operator may be written as !=	|
-
-</details>
-
-<details>
-  <summary>Joining Tables : [ TABLE ALIAS | INNER JOIN | FULL OUTER JOIN | LEFT OUTER JOIN | RIGHT OUTER JOIN | SELF JOIN | CROSS JOIN ] </summary>
+  <summary>Joining Tables : [ TABLE ALIAS | INNER JOIN | FULL OUTER JOIN | LEFT OUTER JOIN | RIGHT OUTER JOIN | SELF JOIN | CROSS JOIN | NATURAL JOIN] </summary>
 
 ## Table Alias
 A table alias is a feature in SQL that allows to assign a temporary name to a table during the execution of a query.
@@ -736,6 +697,42 @@ ORDER BY
   f.title;
 ```
 
+## Right Outer Join
+
+| Command | Description |
+| --- | --- | 
+| **SELECT** select_list <br>**FROM** TableA **RIGHT OUTER JOIN** TableB <br>**ON** TableA.column_name = TableB.column_name;  | Right outer join produces a complete set of records from Table B(the right table),<br> with the matching records (where available) in Table A.<br>If there is no match, the left side will contain null. |
+![right_outer_join](images/right_outer_join.jpg)  
+
+**Note:**
+- If the columns for joining two tables have the same name, we can use the USING syntax:
+  ```PostgreSQL
+  SELECT
+    select_list
+  FROM
+    table1
+      RIGHT JOIN table2 USING (column_name);
+  ------------------------------------------------------------
+  SELECT
+  f.film_id,
+  f.title,
+  i.inventory_id
+  FROM
+    film f
+      RIGHT JOIN inventory i USING (film_id)
+  ORDER BY
+    i.inventory_id;
+  ```
+
+To produce the set of records only in Table B, but not in Table A, we perform the same right outer join, then exclude the records we don't want from the left side via a where clause.
+```PostgreSQL
+SELECT * FROM TableA
+RIGHT OUTER JOIN TableB
+ON TableA.name = TableB.name
+WHERE TableA.id IS null
+```
+![right_outer_right](images/right_outer_join2.jpg) 
+
 ## Self Join
 A self-join is a regular join that joins a table to itself. In practice, we typically use a self-join to query hierarchical data or to compare rows within the same table.
 
@@ -788,7 +785,107 @@ FROM
 
 The query ```SELECT * FROM T1 CROSS JOIN T2;``` will produce the following output:  
 ![cross_join](images/cross_join.jpeg)
+
+## Natural Join
+A natural join is a join that creates an implicit join based on the same column names in the joined tables.
+The syntax for natural join:
+```PostgreSQL
+SELECT select_list
+FROM table1
+NATURAL [INNER, LEFT, RIGHT] JOIN table2;
+```
+
+In this syntax:
+- First, specify columns from the tables from which we want to retrieve data in the select_list in the SELECT clause.
+- Second, provide the main table (table1) from which we want to retrieve data.
+- Third, specify the table (table2) that we want to join with the main table, in the NATURAL JOIN clause.
+
+**Note**
+- A natural join can be an inner join, left join, or right join. If we do not specify an explicit join, PostgreSQL will use the INNER JOIN by default.
+- The convenience of the NATURAL JOIN is that it does not require to specify the condition in the join clause because it uses an implicit condition based on the equality of the common columns.
+
+The equivalent of NATURAL JOIN is as follows:
+```PostgreSQL
+SELECT select_list
+FROM table1
+[INNER, LEFT, RIGHT] JOIN table2
+   ON table1.column_name = table2.column;
+```
+**Inner Join**
+```PostgreSQL
+SELECT select_list
+FROM table1
+NATURAL INNER JOIN table2;
+------------------------------equivalent to
+SELECT select_list
+FROM table1
+INNER JOIN table2 USING (column_name);
+```
+
+**Left Join**
+```PostgreSQL
+SELECT select_list
+FROM table1
+NATURAL LEFT JOIN table2;
+------------------------------equivalent to
+SELECT select_list
+FROM table1
+LEFT JOIN table2 USING (column_name);
+```
+
+**Right Join**
+```PostgreSQL
+SELECT select_list
+FROM table1
+NATURAL RIGHT JOIN table2;
+------------------------------equivalent to
+SELECT select_list
+FROM table1
+RIGHT JOIN table2 USING (column_name);
+```
+
 </details>
+<details>
+  <summary>Aggregate Functions [ COUNT | MAX | MIN | SUM | AVG ] : Table </summary>
+
+  | Function | Command | Description |
+  | --- | --- | --- |
+  |**COUNT()** | **COUNT(column_name)** or **COUNT(*)** <br> <br>**SELECT** **COUNT**(column_name) <br> **FROM** table_name;| Returns the number of records returned by a select query.<br>**Note:** NULL values are not counted.|
+  |**AVG()** | **SELECT** **AVG**(column_name) <br> **FROM** table_name ; | Return the average value for the given column.|
+  |**MIN()** | **SELECT** **MIN**(column_name) <br> **FROM** table_name ;| Returns the minimum value from the records.|
+  |**MAX()** | **SELECT** **MAX**(column_name) <br> **FROM** table_name ;| Returns the maximum value from the records.|
+  |**SUM()** | **SELECT** **SUM**(column_name) <br> **FROM** table_name | Returns the total sum of the specified column |
+</details>
+
+<details>
+  <summary> Operators [ Logical | Arithmetic | Comparison ] </summary>
+
+### Logical Operators (AND, OR)
+
+### Arithmetic Operators(+,-,*,/,%)
+
+  | Command    | Description |
+  | ----------- | ----------- |
+  | + | Addition |
+  | - | Subtraction |
+  | * | Multiplication |
+  | / | Division |
+  | % | Modulo |
+  
+### Comparison Operators(=, >, <, >=, <=, <>)
+
+  | Command    | Description |
+  | ----------- | ----------- |
+  | = | Equal |
+  | > | Greater than |
+  | < | Less than	|
+  | >= | Greater than or equal	|
+  | <= |	Less than or equal |  
+  | <>|	Not equal.<br>**Note**: In some versions of SQL this operator may be written as !=	|
+
+</details>
+
+
 
 <details>
   <summary>Grouping Data : [ GROUP BY | HAVING ] </summary>
@@ -811,7 +908,7 @@ GROUP BY
   ...;
 ```
 In this syntax,
-- First, select the columns that we want to group such as ``column1`` and ``column2``, and column that you want to apply an aggregate function (``column3``).
+- First, select the columns that we want to group such as ``column1`` and ``column2``, and column that we want to apply an aggregate function (``column3``).
 - Second, list the columns that we want to group in the ``GROUP BY`` clause.
 
 **Execution Order:** PostgreSQL evaluates the ``GROUP BY`` clause after the ``FROM`` and ``WHERE`` clauses and before the ``HAVING`` ``SELECT``, ``DISTINCT``, ``ORDER BY`` and ``LIMIT`` clauses.
@@ -1151,7 +1248,7 @@ The basic syntax for ANY is as follows:
 expression operator ANY(sub-query)
 ```
 In this syntax:
-- ``expression`` is a value that you want to compare.
+- ``expression`` is a value that we want to compare.
 - ``operator`` is a comparison operator including =, <, >, <=, >=, and <>.
 - ``sub-query`` is a sub-query that returns a set of values to compare against. It must return exactly one column.
 
@@ -1164,7 +1261,7 @@ In this syntax:
 - ``SOME`` is a synonym for ``ANY``, which means that we can use them interchangeably.
 
 ## ALL
-``ALL`` operator allows you to compare a value with all values in a set returned by a sub-query.
+``ALL`` operator allows we to compare a value with all values in a set returned by a sub-query.
 ```PostgreSQL
 expression operator ALL(sub-query)
 ```
