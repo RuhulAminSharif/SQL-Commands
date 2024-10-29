@@ -25,49 +25,6 @@
 | Command | Description |
 | ----------- | ----------- |  
 |**CREATE TABLE** table_name ( <br>  column_name_1 data_type (size) NULL/ NOT NULL , <br> column_name_2 data_type (size) NULL/ NOT NULL ,<br> column_name_3 data_type (size) NULL/ NOT NULL , <br>... ... ...<br>... ... ...<br>PRIMARY KEY(column_name/s) ,<br> CONSTRAINT fk_name FOREIGN KEY (Column_Name/s) REFERENCES referenced_table_name(referenced_column_Name/s) ON DELETE CASCADE ON UPDATE CASCADE , <br>... ... ...<br>... ... ...<br>); |  To Create a Table with Primary key and Foreign Keys.<br> <br>**For example:** <br>create table personal( <br>id int, <br>name varchar(50),<br>birth_date date, <br>phone varchar(12), <br>gender varchar(1));<br> <br><b><u>NOTE:</u> Each Table can have only one Primary Key which may consist of one or more than one Columns. But a table/relation may have multiple Foreign Key.In Case of, Foreign Key declaration, referenced Column have to be Primary Key in referenced table/relation.|  
-
-
-#### Data Types:
-
-There are three main data types:
-- String
-  - **char(size)** : fixed length string, column length can be 0 to 255
-  - **varchar(size)** : variable length string, length can be 0 to 65535
-  - **binary(size)** : fixed length string but only stores binary byte string, length 0 to 255, default 1
-  - **varbinary(size)** : variable length string but only stores binary bytes string, length 0 to 65535, default 1
-  - **tinytext** : holds a string with maximum length of 255 charachters
-  - **text(size)** : holds a string with maximum length of 65535 bytes
-  - **mediumtext** : holds a string with maximum length of 16,777,215 bytes
-  - **longtext** : holds a string with maximum length of 4,294,967,295 characters
-  - **tinyblob** : for BLOBS. max length : 255 bytes
-  - **blob** : for BLOBS, max length : 65,535 bytes
-  - **mediumblob** : for BLOBS, mex length : 16,777,215 bytes
-  - **longblob** : for BLOBS, mex length : 4,294,967,295 bytes
-  - **enum(values1, values2, ...)** : A string object that can have only one value, chosen from a list of possible values. We can list up to 65535 values in an enum list
-  - **set(val1, val2, val3, ...)** : A string object that can have 0 or more values, chosen from a list of possible values.
-
-- Numeric
-  - **bit(size)** : bit value type. size 1 to 64. default size 1 
-  - **tinyint(size)** : value range from -128 to  127. maximum size 255
-  - **int(size)** : value ranges from 2147483648 to 2147483647. 
-  - **integer(size)** : value ranges from 2147483648 to 2147483647
-  - **smallint(size)** : A small integer. Signed range is from -32768 to 32767.
-  - **mediumint(size)** : A medium integer. Signed range is from -8388608 to 8388607
-  - **bigint(size)** : A large integer. Signed range is from -9223372036854775808 to 9223372036854775807. 
-  - **bool** : Zero is considered as false, nonzero values are considered as true.
-  - **boolean** : Zero is considered as false, nonzero values are considered as true.
-  - **float(p)** : A floating point number. MySQL uses the p value to determine whether to use FLOAT or DOUBLE for the resulting data type. If p is from 0 to 24, the data type becomes FLOAT(). If p is from 25 to 53, the data type becomes DOUBLE()
-  - **double(size,d)** : A normal-size floating point number. The total number of digits is specified in size. The number of digits after the decimal point is specified in the d parameter
-  - **decimal(size,d)** : An exact fixed-point number. The total number of digits is specified in size. The number of digits after the decimal point is specified in the d parameter. The maximum number for size is 65, but default 10. The maximum number for d is 30, default 0.
-  - **dec(size,d)** : Same as DECIMAL(size,d)
-- Date and Time
-  - **date** 'yyyy-mm-dd', allowed '1000-01-01' to '9999-12-31'
-  - **datetime(fsp)** 'yyyy-mm-dd hh:mm:ss', allowed '1000-01-01 00:00:00' to '9999-12-31 23:59:59'
-    - Adding DEFAULT and ON UPDATE in the column definition to get automatic initialization and updating to the current date and time
-  - **timestamp(fsp)** 'yyyy-mm-dd hh:mm:ss', allowed '1970-01-01 00:00:01' UTC to '2038-01-09 03:14:07'
-  - **time(fsp)** 'hh:mm:ss', allowed '-838:59:59' to '838:59:59'
-  - **year** a year in four-digit format, allowed 1901 to 2155 and 0000
-
 </details>
 
 <details>
@@ -1384,3 +1341,127 @@ ORDER BY
   last_name;
 ```
 </details>
+
+<details>
+  <summary>Postgres Data Types</summary>
+
+## Data Types in Postgres
+### BOOLEAN
+- ``true`` -> true, 't', 'true', 'y', 'yes', '1'
+- ``false`` -> false, 'f', 'false', 'n', 'no', '0'
+- ``NULL``
+```PostgreSQL
+CREATE TABLE stock_availability (
+   product_id INT PRIMARY KEY,
+   available BOOLEAN NOT NULL
+);
+```
+### Character types  
+PostgreSQL provides three primary character types:
+- CHAR(n) or CHARACTER(N) -> fixed length, blank padded
+- VARCHAR(N) or CHARACTER VARYING(n) -> variable length with length limit
+- TEXT, VARCHAR -> variable unlimited length
+```PostgreSQL
+CREATE TABLE character_tests (
+  id serial PRIMARY KEY,
+  x CHAR (1),
+  y VARCHAR (10),
+  z TEXT
+);
+```
+### NUMERIC / DECIMAL / DEC
+The syntax:
+```PostgresSQL
+column_name NUMERIC(precision, scale)
+column_name DECIMAL(precision, scale)
+column_name DEC(precision, scale)
+```
+In this syntax:
+- The ``precision`` is the total number of digits
+- The ``scale`` is the number of digits in the fraction part.
+
+**Note:**  
+- The ``NUMERIC`` type can hold a value of up to 131,072 digits before the decimal point 16,383 digits after the decimal point.
+- The ``scale`` of the NUMERIC type can be zero, positive, or negative.
+- NUMERIC , DECIMAL , DEC - they all are equivalent
+### DOUBLE PRECISION
+```PostgreSQL
+column_name double precision
+------------------------------or
+colum_name float
+```
+Range: 1e-307 to 1e+308 with a precision of at least 15 digits
+```PostgreSQL
+CREATE TABLE temperatures (
+    id SERIAL PRIMARY KEY,
+    location TEXT NOT NULL,
+    temperature DOUBLE PRECISION
+);
+```
+### REAL
+- A value of the real type takes 4 bytes of storage space. Its valid range is from -3.40282347 × 1038 and 3.40282347 × 1038.
+```PostgreSQL
+CREATE TABLE weathers(
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    location VARCHAR(255) NOT NULL,
+    wind_speed_mps REAL NOT NULL,
+    temperature_celsius REAL NOT NULL,
+    recorded_at TIMESTAMP NOT NULL
+);
+```
+### Integer
+To store the whole numbers in PostgreSQL, we can use one of the following integer types:
+- SMALLINT -> 2 bytes
+  ```PostgreSQL
+  CREATE TABLE books (
+    book_id SERIAL PRIMARY KEY,
+    title VARCHAR (255) NOT NULL,
+    pages SMALLINT NOT NULL CHECK (pages > 0)
+  );
+  ```
+- INTEGER or INT -> 4 bytes
+  ```PostgreSQL
+  CREATE TABLE cities (
+    city_id serial PRIMARY KEY,
+    city_name VARCHAR (255) NOT NULL,
+    population INT NOT NULL CHECK (population >= 0)
+  );
+  ```
+- BIGINT -> 8 bytes
+
+### DATE data type
+- Allows to store date data
+- uses 4 bytes to store a date value
+- uses yyyy-mm-dd format
+```PostgreSQL
+CREATE TABLE employees (
+  employee_id SERIAL PRIMARY KEY,
+  first_name VARCHAR (255) NOT NULL,
+  last_name VARCHAR (255) NOT NULL,
+  birth_date DATE NOT NULL,
+  hire_date DATE NOT NULL
+);
+```
+### Timestamp Data Types
+Provides tow temporal data types for handling timestamps:
+- ``timestamp``: a timestamp without a timezone one.
+- ``timestamptz``: timestamp with a timezone.
+**Note:**
+- The ``timestamp`` datatype allows to store both date and time. But, it does not have time zone data
+- The ``timestamptz`` datatype is the timestamp with a timezone. The ``timestamptz`` data type is a time zone-aware date and time data type.
+```PostgreSQL
+CREATE TABLE timestamp_demo (
+    ts TIMESTAMP,
+    tstz TIMESTAMPTZ
+);
+----------------------------------
+INSERT INTO timestamp_demo (ts, tstz)
+VALUES('2016-06-22 19:10:25-07','2016-06-22 19:10:25-07');
+```
+To set timezone: ````SET timezone = 'America/Los_Angeles';````  
+To see current timezone: ```SHOW TIMEZONE;```
+
+
+Read details others data types at: [Data Types in Depth](https://neon.tech/postgresql/tutorial#section-14-postgresql-data-types-in-depth)
+</details>
+
