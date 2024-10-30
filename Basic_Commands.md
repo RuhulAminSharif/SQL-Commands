@@ -1014,7 +1014,7 @@ HAVING SUM(amount) > 100
 </details>
 
 <details>
-  <summary>Grouping Data : [ GROUPING SETS | CUBE ] </summary>
+  <summary>Grouping Data : [ GROUPING SETS | CUBE | ROLLUP ] </summary>
 
 ## GROUPING SETS
 The ``GROUPING SETS`` feature allows users to generate result sets that are equivalent to those produced by the ``UNION ALL`` of multiple ``GROUP BY`` clauses. This feature is highly useful for creating complex reports with multiple levels of aggregation in a single query.
@@ -1470,6 +1470,66 @@ ORDER BY
   first_name,
   last_name;
 ```
+</details>
+
+<details>
+  <summary>Common Table Expressions : [ CTE ]</summary>
+
+## CTE
+- A common table expression (CTE) allows to create a temporary result set within a query.
+- A CTE helps to enhance the readability of a complex query by breaking it down into smaller and more reusable parts
+
+The basic syntax is as follows:
+```PostgreSQL
+WITH cte_name (column1, column2, ...) AS (
+    -- CTE query
+    SELECT ...
+)
+-- Main query using the CTE
+SELECT ...
+FROM cte_name;
+```
+The following example uses a common table expression (CTE) to select the title and length of films in the 'Action' category and returns all the columns of the CTE:
+```PostgreSQL
+WITH action_films AS (
+  SELECT
+    f.title,
+    f.length
+  FROM
+    film f
+    INNER JOIN film_category fc USING (film_id)
+    INNER JOIN category c USING(category_id)
+  WHERE
+    c.name = 'Action'
+)
+SELECT * FROM action_films;
+```
+The following example uses multiple CTEs to calculate various statistics related to films and customers:
+```PostgreSQL
+WITH film_stats AS (
+    -- CTE 1: Calculate film statistics
+    SELECT
+        AVG(rental_rate) AS avg_rental_rate,
+        MAX(length) AS max_length,
+        MIN(length) AS min_length
+    FROM film
+),
+customer_stats AS (
+    -- CTE 2: Calculate customer statistics
+    SELECT
+        COUNT(DISTINCT customer_id) AS total_customers,
+        SUM(amount) AS total_payments
+    FROM payment
+)
+-- Main query using the CTEs
+SELECT
+    ROUND((SELECT avg_rental_rate FROM film_stats), 2) AS avg_film_rental_rate,
+    (SELECT max_length FROM film_stats) AS max_film_length,
+    (SELECT min_length FROM film_stats) AS min_film_length,
+    (SELECT total_customers FROM customer_stats) AS total_customers,
+    (SELECT total_payments FROM customer_stats) AS total_payments;
+```
+**TO Do:** Read more about ``Recursive CTE``
 </details>
 
 <details>
