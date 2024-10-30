@@ -1014,6 +1014,136 @@ HAVING SUM(amount) > 100
 </details>
 
 <details>
+  <summary>Grouping Data : [ GROUPING SETS | CUBE ] </summary>
+
+## GROUPING SETS
+The ``GROUPING SETS`` feature allows users to generate result sets that are equivalent to those produced by the ``UNION ALL`` of multiple ``GROUP BY`` clauses. This feature is highly useful for creating complex reports with multiple levels of aggregation in a single query.
+
+The basic syntax is as follows:
+```PostgreSQL
+SELECT
+    column1,
+    column2,
+    aggregate_function(column3)
+FROM
+    table_name
+GROUP BY
+    GROUPING SETS (
+        (column1, column2),
+        (column1),
+        (column2),
+        ()
+);
+```
+A table with following properties:
+```PostgreSQL
+CREATE TABLE sales (
+    brand VARCHAR NOT NULL,
+    segment VARCHAR NOT NULL,
+    quantity INT NOT NULL,
+    PRIMARY KEY (brand, segment)
+);
+```
+Let's think of the following scenario:
+- return the number of products sold by brand and segment
+- return the number of products sold by a brand
+- return the number of products sold by segment
+- return the number of products sold for all brands and segments.
+
+We can find each of the result by running ``group by`` statements separately. What if we need to run them in a single query? Then may be we think to combine them using ``UNION ALL``. But it raises performances issues. Then the solution comes with ``GROUPING SETS`` clause.
+Let's see both commands:
+```PostgreSQL
+SELECT brand, segment, SUM (quantity)
+FROM sales
+GROUP BY brand, segment
+
+UNION ALL
+
+SELECT brand, NULL, SUM (quantity)
+FROM sales
+GROUP BY brand
+
+UNION ALL
+
+SELECT NULL, segment, SUM (quantity)
+FROM sales
+GROUP BY segment
+
+UNION ALL
+
+SELECT NULL, NULL, SUM (quantity)
+FROM sales;
+
+---------------------------------------equivalent to 
+SELECT brand, segment, SUM (quantity)
+FROM sales
+GROUP BY
+    GROUPING SETS (
+        (brand, segment),
+        (brand),
+        (segment),
+        ()
+    );
+``` 
+**To Do:** Read more about grouping function
+
+## CUBE
+PostgreSQL ``CUBE`` is a subclause of the ``GROUP BY`` clause. The ``CUBE`` allows to generate multiple grouping sets.
+
+Syntax:
+```PostgreSQL
+SELECT c1, c2, c3, aggregate (c4)
+FROM table_name
+GROUP BY
+    CUBE (c1, c2, c3);
+```
+Here, CUBE(c1,c2,c3) is equivalent to the following:
+```PostgreSQL
+CUBE (c1, c2, c3);
+-------------------------equivalent to
+GROUPING SETS (
+    (c1,c2,c3),
+    (c1,c2),
+    (c1,c3),
+    (c2,c3),
+    (c1),
+    (c2),
+    (c3),
+    ()
+ )
+```
+The above example can be run as follows:
+```PostgreSQL
+SELECT brand, segment, SUM (quantity)
+FROM sales
+GROUP BY
+    CUBE (brand, segment)
+```
+
+## ROLLUP
+- The PostgreSQL ``ROLLUP`` is a subclause of the ``GROUP BY`` clause that offers a shorthand for defining multiple grouping sets.
+- Different from the ``CUBE`` subclause, ``ROLLUP`` does not generate all possible grouping sets based on the specified columns. It just makes a subset of those.
+For example, the ``CUBE (c1,c2,c3)`` makes all eight possible grouping sets:
+```PostgreSQL
+(c1, c2, c3)
+(c1, c2)
+(c2, c3)
+(c1,c3)
+(c1)
+(c2)
+(c3)
+()
+```
+However, the ``ROLLUP(c1,c2,c3)`` generates only four grouping sets, assuming the hierarchy c1 > c2 > c3 as follows:
+```PostgreSQL
+(c1, c2, c3)
+(c1, c2)
+(c1)
+()
+```
+</details>
+
+<details>
   <summary>Set Operations : [ Union | INTERSECT | EXCEPT] </summary>
 
 ## UNION
