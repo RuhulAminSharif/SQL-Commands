@@ -1575,6 +1575,66 @@ VALUES
 </details>
 
 <details>
+  <summary>Modifying Data : [ UPDATE | UPDATE JOIN ] : Table</summary>
+
+## UPDATE
+- The PostgreSQL UPDATE statement allows to update data in one or more columns of one or more rows in a table.  
+
+Basic Syntax:
+```PostgreSQL
+UPDATE table_name
+SET column1 = value1,
+    column2 = value2,
+    ...
+WHERE condition;
+```
+In this syntax:
+- First, specify the name of the table that we want to update data after the UPDATE keyword.
+- Second, specify columns and their new values after SET keyword. The columns that do not appear in the SET clause retain their original values.
+- Third, determine which rows to update in the condition of the WHERE clause. (optional clause)
+Some examples:
+```PostgreSQL
+UPDATE account
+SET last_login = CURRENT_TIMESTAMP
+    WHERE last_login IS NULL;
+```
+Reset everything:
+```PostgreSQL
+UPDATE account
+SET last_login = CURRENT_TIMESTAMP
+```
+Set based on another column
+```PostgreSQL
+UPDATE account
+SET last_login = created_on
+```
+Returning affected rows:
+```PostgreSQL
+UPDATE account
+SET last_login = created_on
+RETURNING account_id,last_login
+```
+
+## UPDATE JOIN
+Basic syntax:
+```PostgreSQL
+UPDATE table1
+SET table1.c1 = new_value
+FROM table2
+WHERE table1.c2 = table2.c2;
+```
+See the following two tables:  
+![no alt text](db_design/image.png)
+**Task:** You have to calculate the net price of every product based on the discount of the product segment
+```PostgreSQL
+UPDATE product
+SET net_price = price - price * discount
+FROM product_segment
+WHERE product.segment_id = product_segment.id;
+```
+</details>
+
+<details>
   <summary>Postgres Data Types</summary>
 
 ## Data Types in Postgres
