@@ -28,19 +28,6 @@
 </details>
 
 <details>
-<summary> Modifying Database : [ INSERT INTO ] : Table </summary>
-  
-<br><br>
-  
-| Command    | Description |
-| ----------- | ----------- |  
-|<b>INSERT INTO table_name VALUES <br>(value1,value2,value3,... ...),<br>(value1,value2,value3,... ...), <br>(value1,value2,value3,... ...), <br>... ... ; <b>| TO add values for all the columns of the table.<br><br> No need to specify the column names in the SQL syntax. <br><br> But need to make sure the order of the values is in the same order as the columns in the table.|
-|<b>INSERT INTO table_name <br>(column1, column2, column3,... ...) VALUES <br>(value1,value2,value3,... ...), <br>(value1,value2,value3,... ...) , <br>(value1,value2,value3,... ...),<br> ... ... ; <b>|To insert Data Only in Specified Columns.|
-  <br>
-
-  <br> 
-</details>
-<details>
   <summary>Execution Order : [ SELECT with all clause] </summary>
 
 ## Execution Order
@@ -1530,6 +1517,61 @@ SELECT
     (SELECT total_payments FROM customer_stats) AS total_payments;
 ```
 **TO Do:** Read more about ``Recursive CTE``
+</details>
+
+<details>
+<summary> Modifying Data : [ INSERT INTO ] : Table </summary>
+  
+## INSERT INTO
+  
+| Command    | Description |
+| ----------- | ----------- |  
+| **INSERT INTO** table_name <br>VALUES (value1,value2,value3,... ...),<br>(value1,value2,value3,... ...), <br>(value1,value2,value3,... ...), <br>... ... ; | To add values for all the columns of the table.<br><br> No need to specify the column names in the SQL syntax. <br><br> But need to make sure the order of the values is in the same order as the columns in the table.|
+| **INSERT INTO** <br> table_name (column1, column2, column3,... ...) VALUES <br>(value1,value2,value3,... ...), <br>(value1,value2,value3,... ...) , <br>(value1,value2,value3,... ...),<br> ... ... ;|To insert Data Only in Specified Columns.|
+| **INSERT INTO** <br> table1(column1, column2, …)<br> **VALUES** (value1, value2, …) <br>**RETURNING** *; | The ``INSERT`` statement has an optional ``RETURNING`` clause that returns the information of the inserted row. |
+
+### A table with following properties:
+```PostgreSQL
+CREATE TABLE links (
+  id SERIAL PRIMARY KEY,
+  url VARCHAR(255) NOT NULL,
+  name VARCHAR(255) NOT NULL,
+  description VARCHAR (255),
+  last_update DATE
+);
+```
+Insert the following information with url: https://github.com/RuhulAminSharif/SQL-Commands/ and name : SQL Commands
+```PostgreSQL
+INSERT INTO links(url, name)
+VALUES ('https://github.com/RuhulAminSharif/SQL-Commands/',  'SQL Commands')
+```
+Insert the following information with url : http://www.oreilly.com, and name: O'Reilly Media
+```PostgreSQL
+INSERT INTO links(url, name)
+VALUES ('http://www.oreilly.com',  'O''Reilly Media')
+```
+Another insertion example:
+```PostgreSQL
+INSERT INTO links (url, name, last_update)
+VALUES('https://www.google.com','Google','2013-06-01');
+```
+### A table with following properties:
+```PostgreSQL
+CREATE TABLE contacts (
+    id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(384) NOT NULL UNIQUE
+);
+```
+Inserting multiple rows:
+```PostgreSQL
+INSERT INTO contacts (first_name, last_name, email)
+VALUES
+    ('John', 'Doe', 'johndoe@gmail.com'),
+    ('Jane', 'Smith', 'janesmith@gmail.com'),
+```
+
 </details>
 
 <details>
