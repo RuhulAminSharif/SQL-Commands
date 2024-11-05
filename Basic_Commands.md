@@ -1635,6 +1635,103 @@ WHERE product.segment_id = product_segment.id;
 </details>
 
 <details>
+  <summary>Modifying Data : [ DELETE | DELETE JOIN ] : Table </summary>
+
+## DELETE 
+The PostgreSQL ``DELETE`` statement allows to delete one or more rows from a table.  
+
+The basic syntax of DELETE statement is as follows:
+```PostgreSQL
+DELETE FROM table_name
+WHERE condition;
+```
+In this syntax:
+- First, specify the name (table_name) of the table from which we want to delete data after the DELETE FROM keywords.
+- Second, specify a condition in the WHERE clause to determine which rows to delete.
+
+**Note:**
+- The WHERE clause is optional. If we omit the WHERE clause, the DELETE statement will delete all rows in the table.
+- The DELETE statement returns the number of rows deleted. It returns zero if the DELETE statement did not delete any row.
+
+
+To return the deleted row(s) to the client, we use the RETURNING clause as follows:
+```PostgreSQL
+DELETE FROM table_name
+WHERE condition
+RETURNING (select_list | *)
+```
+A table with following properties:
+```PostgreSQL
+CREATE TABLE todos (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    completed BOOLEAN NOT NULL DEFAULT false
+);
+```
+to delete one row with the id 1 from the todos table:
+```PostgreSQL
+DELETE FROM todos
+WHERE id = 1;
+```
+To delete the rows with the completed status true:
+```PostgreSQL
+DELETE FROM todos
+WHERE completed = true;
+```
+To delete all the rows:
+```PostgreSQL
+DELETE FROM todos
+```
+
+## DELETE JOIN
+The basic syntax:
+```PostgreSQL
+DELETE FROM table1
+USING table2
+WHERE condition
+RETURNING returning_columns;
+```
+In this syntax:
+- First, specify the name of the table (table1) from which we want to delete data after the DELETE FROM keywords
+- Second, provide a table (table2) to join with the main table after the USING keyword.
+- Third, define a condition in the WHERE clause for joining two tables.
+- Finally, return the deleted rows in the RETURNING clause. The RETURNING clause is optional.
+
+For example, the following statement uses the DELETE statement with the USING clause to delete data from t1 that has the same id as t2:
+```PostgreSQL
+DELETE FROM t1
+USING t2
+WHERE t1.id = t2.id
+```
+Consider the following two tables:
+```PostgreSQL
+CREATE TABLE member(
+   id SERIAL PRIMARY KEY,
+   first_name VARCHAR(50) NOT NULL,
+   last_name VARCHAR(50) NOT NULL,
+   phone VARCHAR(15) NOT NULL
+);
+
+
+CREATE TABLE denylist(
+    phone VARCHAR(15) PRIMARY KEY
+);
+```
+Delete the records from member tables whose phone numbers are in the denylist:
+```PostgreSQL
+DELETE FROM member
+USING denylist
+WHERE member.phone = denylist.phone
+-------------------------------------alternative statement
+DELETE FROM member
+WHERE phone IN (
+  SELECT phone
+  FROM denylist
+)
+```
+</details>
+
+<details>
   <summary>Postgres Data Types</summary>
 
 ## Data Types in Postgres
