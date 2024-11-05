@@ -1774,6 +1774,73 @@ DO UPDATE SET
 </details>
 
 <details>
+  <summary>Transactions : [ BEGIN | COMMIT | ROLLBACK ] </summary>
+
+## What is a database transaction?
+- A database transaction is a single unit of work that consists of one or more operations.
+- A classical example of a transaction is a bank transfer from one account to another. A complete transaction must ensure a balance between the sender and receiver accounts.
+- This implies that if the sender account transfers X amount, the receiver receives exactly X amount, neither more nor less.
+- A PostgreSQL transaction is atomic, consistent, isolated, and durable. These properties are often referred to collectively as ACID:
+  - **Atomicity** guarantees that the transaction is completed in an all-or-nothing manner.
+  - **Consistency** ensures that changes to data written to the database are valid and adhere to predefined rules.
+  - **Isolation** determines how the integrity of a transaction is visible to other transactions.
+  - **Durability** ensures that transactions that have been committed are permanently stored in the database.
+
+To begin a transaction:
+```PostgreSQL
+BEGIN TRANSACTION;
+------------------OR
+BEGIN WORK;
+------------------OR
+BEGIN;
+```
+Example:
+```PostgreSQL
+BEGIN;
+
+INSERT/UPDATE/DELETE commands
+```
+**To commit a transaction:**  
+To permanently apply the change to the database, we commit the transaction by using the COMMIT WORK statement:
+```PostgreSQL
+COMMIT TRANSACTION;
+--------------------OR
+COMMIT WORK;
+--------------------OR
+COMMIT;
+```
+Example:
+```PostgreSQL
+BEGIN;
+
+INSERT/UPDATE/DELETE commnad(s)
+
+COMMIT;
+```
+**Roll back a transaction**  
+If we want to undo the changes to the database, we can use the ROLLBACK statement:
+```PostgreSQL
+ROLLBACK TRANSACTION;
+-------------------------OR
+ROLLBACK WORK;
+-------------------------OR
+ROLLBACK;
+```
+Example: 
+
+```PostgreSQL
+-- start a transaction
+BEGIN;
+
+UPDATE accounts
+SET balance = balance - 1000
+WHERE id =  1;
+
+-- rollback the changes
+ROLLBACK;
+```
+</details>
+<details>
   <summary>Postgres Data Types</summary>
 
 ## Data Types in Postgres
