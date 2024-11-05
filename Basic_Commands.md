@@ -1732,6 +1732,48 @@ WHERE phone IN (
 </details>
 
 <details>
+  <summary>Modifying Data : [ UPSERT ] : INSERT ON CONFLICT </summary>
+
+The basic syntax of the INSERT...ON CONFLICT statement:
+```PostgreSQL
+INSERT INTO table_name (column1, column2, ...)
+VALUES (value1, value2, ...)
+ON CONFLICT (conflict_column)
+DO NOTHING | DO UPDATE SET column1 = value1, column2 = value2, ...;
+```
+In this syntax:
+- table_name: This is the name of the table into which we want to insert data.
+- (column1, column2, ...): The list of columns we want to insert values into the table.
+- VALUES(value1, value2, ...): The values we want to insert into the specified columns (column1, column2, ...).
+- ON CONFLICT (conflict_column): This clause specifies the conflict target, which is the unique constraint or unique index that may cause a conflict.
+- DO NOTHING: This instructs PostgreSQL to do nothing when a conflict occurs.
+- DO UPDATE: This performs an update if a conflict occurs.
+- SET column = value1, column = value2, ...: This list of the columns to be updated and their corresponding values in case of conflict.
+
+**Working of INSERT...ON CONFLICT**
+- First, the ON CONFLICT clause identifies the conflict target which is usually a unique constraint (or a unique index). If the data that we insert violates the constraint, a conflict occurs.
+- Second, the DO UPDATE instructs PostgreSQL to update existing rows or do nothing rather than aborting the entire operation when a conflict occurs.
+- Third, the SET clause defines the columns and values to update. We can use new values or reference the values we attempted to insert using the EXCLUDED keyword.
+
+Example:
+```PostgreSQL
+CREATE TABLE inventory(
+   id INT PRIMARY KEY,
+   name VARCHAR(255) NOT NULL,
+   price DECIMAL(10,2) NOT NULL,
+   quantity INT NOT NULL
+);
+-----------------------------------
+INSERT INTO inventory (id, name, price, quantity)
+VALUES (1, 'A', 16.99, 120)
+ON CONFLICT(id)
+DO UPDATE SET
+  price = EXCLUDED.price,
+  quantity = EXCLUDED.quantity;
+```
+</details>
+
+<details>
   <summary>Postgres Data Types</summary>
 
 ## Data Types in Postgres
