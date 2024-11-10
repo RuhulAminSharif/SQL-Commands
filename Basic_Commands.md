@@ -19,15 +19,6 @@
 </details>
 
 <details>
-  <summary> Database Definition: [ CREATE ] : Table </summary>
-<br><br>
-
-| Command | Description |
-| ----------- | ----------- |  
-|**CREATE TABLE** table_name ( <br>  column_name_1 data_type (size) NULL/ NOT NULL , <br> column_name_2 data_type (size) NULL/ NOT NULL ,<br> column_name_3 data_type (size) NULL/ NOT NULL , <br>... ... ...<br>... ... ...<br>PRIMARY KEY(column_name/s) ,<br> CONSTRAINT fk_name FOREIGN KEY (Column_Name/s) REFERENCES referenced_table_name(referenced_column_Name/s) ON DELETE CASCADE ON UPDATE CASCADE , <br>... ... ...<br>... ... ...<br>); |  To Create a Table with Primary key and Foreign Keys.<br> <br>**For example:** <br>create table personal( <br>id int, <br>name varchar(50),<br>birth_date date, <br>phone varchar(12), <br>gender varchar(1));<br> <br><b><u>NOTE:</u> Each Table can have only one Primary Key which may consist of one or more than one Columns. But a table/relation may have multiple Foreign Key.In Case of, Foreign Key declaration, referenced Column have to be Primary Key in referenced table/relation.|  
-</details>
-
-<details>
   <summary>Execution Order : [ SELECT with all clause] </summary>
 
 ## Execution Order
@@ -1840,126 +1831,132 @@ WHERE id =  1;
 ROLLBACK;
 ```
 </details>
+
 <details>
-  <summary>Postgres Data Types</summary>
+  <summary> Managing Tables : [ CREATE TABLE | SELECT INTO | CREATE TABLE AS ] </summary>
+<br><br>
 
-## Data Types in Postgres
-### BOOLEAN
-- ``true`` -> true, 't', 'true', 'y', 'yes', '1'
-- ``false`` -> false, 'f', 'false', 'n', 'no', '0'
-- ``NULL``
+## CREATE TABLE
+The basic syntax of the ``create`` table statement is as follows:
 ```PostgreSQL
-CREATE TABLE stock_availability (
-   product_id INT PRIMARY KEY,
-   available BOOLEAN NOT NULL
+CREATE TABLE [IF NOT EXISTS] table_name (
+   column1 datatype(length) column_constraint,
+   column2 datatype(length) column_constraint,
+   ...
+   table_constraints
 );
 ```
-### Character types  
-PostgreSQL provides three primary character types:
-- CHAR(n) or CHARACTER(N) -> fixed length, blank padded
-- VARCHAR(N) or CHARACTER VARYING(n) -> variable length with length limit
-- TEXT, VARCHAR -> variable unlimited length
-```PostgreSQL
-CREATE TABLE character_tests (
-  id serial PRIMARY KEY,
-  x CHAR (1),
-  y VARCHAR (10),
-  z TEXT
-);
-```
-### NUMERIC / DECIMAL / DEC
-The syntax:
-```PostgresSQL
-column_name NUMERIC(precision, scale)
-column_name DECIMAL(precision, scale)
-column_name DEC(precision, scale)
-```
-In this syntax:
-- The ``precision`` is the total number of digits
-- The ``scale`` is the number of digits in the fraction part.
+In this syntax:  
+- First, specify the name of the table that we want to create after the ``CREATE TABLE`` keywords. The table name must be unique in a schema. If we create a table with a name that already exists, we'll get an error.
+  - A schema is a named collection of database objects including tables. If you create a table without a schema, it defaults to public.
+- Second, use the IF NOT EXISTS option to create a new table only if it does not exist. When we use the IF NOT EXISTS option and the table already exists, PostgreSQL will issue a notice instead of an error.
+- Third, specify table columns separated by commas. Each column definition consists of the column name, data type, size, and constraint.
+  - The constraint of a column specifies a rule that is applied to data within a column to ensure data integrity. The column constraints include ``primary key``, ``foreign key``, ``not null``, ``unique``, ``check``, and ``default``.
+    - For example, the ``NOT NULL`` constraint ensures that the values in a column cannot be NULL. 
+- Finally, specify constraints for the table including ``primary key``, ``foreign key``, and ``check`` constraints.
+  - A table constraint is a rule that is applied to the data within the table to maintain data integrity.
 
-**Note:**  
-- The ``NUMERIC`` type can hold a value of up to 131,072 digits before the decimal point 16,383 digits after the decimal point.
-- The ``scale`` of the NUMERIC type can be zero, positive, or negative.
-- NUMERIC , DECIMAL , DEC - they all are equivalent
-### DOUBLE PRECISION
-```PostgreSQL
-column_name double precision
-------------------------------or
-colum_name float
-```
-Range: 1e-307 to 1e+308 with a precision of at least 15 digits
-```PostgreSQL
-CREATE TABLE temperatures (
-    id SERIAL PRIMARY KEY,
-    location TEXT NOT NULL,
-    temperature DOUBLE PRECISION
-);
-```
-### REAL
-- A value of the real type takes 4 bytes of storage space. Its valid range is from -3.40282347 × 1038 and 3.40282347 × 1038.
-```PostgreSQL
-CREATE TABLE weathers(
-    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    location VARCHAR(255) NOT NULL,
-    wind_speed_mps REAL NOT NULL,
-    temperature_celsius REAL NOT NULL,
-    recorded_at TIMESTAMP NOT NULL
-);
-```
-### Integer
-To store the whole numbers in PostgreSQL, we can use one of the following integer types:
-- SMALLINT -> 2 bytes
-  ```PostgreSQL
-  CREATE TABLE books (
-    book_id SERIAL PRIMARY KEY,
-    title VARCHAR (255) NOT NULL,
-    pages SMALLINT NOT NULL CHECK (pages > 0)
-  );
-  ```
-- INTEGER or INT -> 4 bytes
-  ```PostgreSQL
-  CREATE TABLE cities (
-    city_id serial PRIMARY KEY,
-    city_name VARCHAR (255) NOT NULL,
-    population INT NOT NULL CHECK (population >= 0)
-  );
-  ```
-- BIGINT -> 8 bytes
+**Note:** Some column constraints can be defined as table constraints such as primary key, foreign key, unique, and check constraints.   
 
-### DATE data type
-- Allows to store date data
-- uses 4 bytes to store a date value
-- uses yyyy-mm-dd format
+### Constraints
+PostgreSQL includes the following column constraints:
+- NOT NULL– ensures that the values in a column cannot be NULL.
+- UNIQUE – ensures the values in a column are unique across the rows within the same table.
+- PRIMARY KEY – a primary key column uniquely identifies rows in a table. A table can have one and only one primary key. The primary key constraint allows to define the primary key of a table.
+- CHECK – ensures the data must satisfy a boolean expression. For example, the value in the price column must be zero or positive.
+- FOREIGN KEY – ensures that the values in a column or a group of columns from a table exist in a column or group of columns in another table. Unlike the primary key, a table can have many foreign keys.
+ 
+**Note:** Table constraints are similar to column constraints except that we can include more than one column in the table constraint.
+
+**Example:**
+We will create a new table called accounts in the dvdrental sample database.  
+The accounts table has the following columns:
+- user_id – primary key
+- username – unique and not null
+- password – not null
+- email – unique and not null
+- created_at – not null
+- last_login – null
 ```PostgreSQL
-CREATE TABLE employees (
-  employee_id SERIAL PRIMARY KEY,
-  first_name VARCHAR (255) NOT NULL,
-  last_name VARCHAR (255) NOT NULL,
-  birth_date DATE NOT NULL,
-  hire_date DATE NOT NULL
+CREATE TABLE accounts (
+  user_id SERIAL PRIMARY KEY,
+  username VARCHAR(50) UNIQUE NOT NULL,
+  password VARCHAR(50) NOT NULL,
+  email VARCHAR(50) UNIQUE NOT NULL,
+  created_at TIMESTAMP NOT NULL,
+  last_login TIMESTAMP 
 );
 ```
-### Timestamp Data Types
-Provides tow temporal data types for handling timestamps:
-- ``timestamp``: a timestamp without a timezone one.
-- ``timestamptz``: timestamp with a timezone.
-**Note:**
-- The ``timestamp`` datatype allows to store both date and time. But, it does not have time zone data
-- The ``timestamptz`` datatype is the timestamp with a timezone. The ``timestamptz`` data type is a time zone-aware date and time data type.
+## SELECT INTO
+The PostgreSQL ``SELECT INTO`` statement creates a new table and inserts data returned from a query into the table.  
+
+The basic syntax is as follows: 
 ```PostgreSQL
-CREATE TABLE timestamp_demo (
-    ts TIMESTAMP,
-    tstz TIMESTAMPTZ
-);
-----------------------------------
-INSERT INTO timestamp_demo (ts, tstz)
-VALUES('2016-06-22 19:10:25-07','2016-06-22 19:10:25-07');
+SELECT select_list
+INTO [ TEMPORARY | TEMP ] [ TABLE ] new_table_name
+FROM table_name
+WHERE search_condition;
 ```
-To set timezone: ````SET timezone = 'America/Los_Angeles';````  
-To see current timezone: ```SHOW TIMEZONE;```
+Here,  
+- To create a new table with the structure and data derived from a result set, we specify the new table name after the INTO keyword.
+- The TEMP or TEMPORARY keyword is optional; it allows to create a temporary table instead.
+- The TABLE keyword is optional, which enhances the clarity of the statement.
+- The WHERE clause allows to specify a condition that determines which rows from the original tables should be filled into the new table.
+- Besides the WHERE clause, we can use other clauses in the SELECT statement for the SELECT INTO statement such as INNER JOIN, LEFT JOIN, GROUP BY, and HAVING.
 
+**Note:** we cannot use the SELECT INTO statement in PL/pgSQL because it interprets the INTO clause differently. In this case, we can use the CREATE TABLE AS statement which provides more functionality than the SELECT INTO statement.
 
-Read details others data types at: [Data Types in Depth](https://neon.tech/postgresql/tutorial#section-14-postgresql-data-types-in-depth)
+**Example:**  
+Create a new table called film_r that contains films with the rating R and rental duration 5 days from the film table.
+```PostgreSQL
+SELECT film_id, title, rental_rate
+INTO TABLE film_r
+FROM film
+WHERE rating  = 'R' AND rental_duration = 5
+ORDER BY title
+```
+Create a temporary table named short_film that contains films whose lengths are under 60 minutes:
+```PostgreSQL
+SELECT film_id, title, length
+INTO TEMP TABLE short_film
+FROM film
+WHERE length < 60 
+ORDER BY title
+```
+## CREATE TABLE AS
+The CREATE TABLE AS statement creates a new table and fills it with the data returned by a query.  
+
+The following shows the syntax:
+```PostgreSQL
+CREATE TABLE new_table_name
+AS query;
+```
+For the creation of temporary table:
+```PostgreSQL
+CREATE TEMP TABLE new_table_name
+AS query;
+```
+The columns of the new table will have the names and data types associated with the output columns of the SELECT clause.  
+
+If we want the table columns to have different names, then we can specify the new table columns after the new table name:
+```PostgreSQL
+CREATE TABLE new_table_name ( column_name_list )
+AS query;
+```
+To avoid an error by create a new table that already exists, we can use the ``IF NOT EXISTS`` options as follows:
+```PostgreSQL
+CREATE TABLE IF NOT EXISTS new_table_name
+AS query;
+```
+Create a new table that contains the films whose category is 1:
+```PostgreSQL
+CREATE TABLE IF NOT EXISTS action_film
+AS (
+  SELECT film_id, title, release_year, length, rating
+  FROM film INNER JOIN film_category ON film.film_id = film_category.film_id
+  WHERE category_id = 1
+
+);
+```
+
 </details>
-
