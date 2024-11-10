@@ -1993,7 +1993,141 @@ Creates `fruits` table with the id column as the SERIAL column:
 ```PostgreSQL
 CREATE TABLE fruits (
   id SERIAL PRIMARY KEY,
-  name V
+  name VARCHAR NOT NULL
 )
-``
+```
+</details>
+
+<details>
+  <summary>Managing Tables : [ ALTER TABLE ] </summary>
+
+## ALTER TABLE
+Used to change the structure of an existing table.  
+The basic syntax:
+```PostgreSQL
+ALTER TABLE table_name action;
+```
+PostgreSQL provides the following actions:
+### Add a column
+To add a column:
+```PostgreSQL
+ALTER TABLE table_name
+ADD COLUMN column_name datatype column_constraint;
+```
+When we add a new column to the table, PostgreSQL appends it at the end of the table. PostgreSQL has no option to specify the position of the new column in the table.   
+
+To add multiple column:
+```PostgreSQL
+ALTER TABLE table_name
+ADD COLUMN column_name1 datatype column_constraint;
+ADD COLUMN column_name2 datatype column_constraint;
+ADD COLUMN column_name3 datatype column_constraint;
+... ... ... ... ... ... ... ...
+ADD COLUMN column_namen datatype column_constraint;
+```
+### Drop a column
+```PostgreSQL
+ALTER TABLE table_name
+DROP COLUMN column_name;
+``` 
+If the column that we want to remove is used in other database objects such as views, triggers, and stored procedures, we cannot drop the column because other objects depend on it.   
+To drop the column and all of its dependent objects:
+```PostgreSQL
+ALTER TABLE table_name
+DROP COLUMN column_name CASCADE;
+```
+To avoid error when column does not exist, use the following:
+```PostgreSQL
+ALTER TABLE table_name
+DROP COLUMN IF EXISTS column_name;
+```
+### Change column datatype
+To change the datatype of a column:
+```PostgreSQL
+ALTER TABLE table_name
+ALTER COLUMN column_name
+SET DATA TYPE new_data_type;
+```
+### Rename a column
+To rename a column:
+```PostgreSQL
+ALTER TABLE table_name
+RENAME COLUMN old_column_name TO new_column_name;
+``` 
+### Add/Change constraint to a column
+#### Set/Drop default value for the column
+    ```PostgreSQL
+    ---------------------------------Set default value
+    ALTER TABLE table_name
+    ALTER COLUMN column_name
+    SET DEFAULT value;
+    ---------------------------------Drop default value
+    ALTER TABLE table_name
+    ALTER COLUMN column_name
+    DROP DEFAULT;
+    ``` 
+#### To change ``NOT NULL`` constraint:
+    ```PostgreSQL
+    ----------------------------------Set NOT NULL
+    ALTER TABLE table_name
+    ALTER COLUMN column_name
+    SET NOT NULL;
+    ----------------------------------Drop NOT NULL
+    ALTER TABLE table_name
+    ALTER COLUMN column_name
+    DROP NOT NULL;
+    ``` 
+### Add a constraint to a table:
+  ```PostgreSQL
+  ALTER TABLE table_name
+  ADD CONSTRAINT constraint_name constraint_definition
+  ```
+### Rename a table
+To rename a table:
+```PostgreSQL
+ALTER TABLE table_name
+RENAME TO new_table_name
+``` 
+To avoid error if the table does not exist:
+```PostgreSQL
+ALTER TABLE IF EXISTS table_name
+RENAME to new_table_name
+```
+### Drop a table
+To drop a table:
+```PostgreSQL
+DROP TABLE IF EXISTS table_name [CASCADE | RESTRICT]
+```
+- Use the CASCADE option to remove the table and its dependent objects.
+- Use the RESTRICT option rejects the removal if there is any object depending on the table. The RESTRICT option is the default if we don’t explicitly specify it in the DROP TABLE statement.
+### Truncate a table
+To remove all data from a table:
+```PostgreSQL
+DROP TABLE table_name;
+```
+To remove all data if table has foreign key references:
+```PostgreSQL
+DROP TABLE table_name CASCADE;
+```
+To remove all data with resetting the values of identity column:
+```PostgreSQL
+TRUNCATE TABLE table_name
+RESTART IDENTITY;
+```
+### Copy a table
+To copy a table completely, including both table structure and data:
+```PostgreSQL
+CREATE TABLE new_table AS TABLE existing_table;
+```
+To copy a table structure with no data:
+```PostgreSQL
+CREATE TABLE new_table AS TABLE existing_table WITH NO DATA;
+```
+To copy a table structure with partial data:
+```PostgreSQL
+CREATE TABLE new_table AS
+SELECT *
+FROM existing_table
+WHERE condition;
+```
 </details>
