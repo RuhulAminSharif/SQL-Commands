@@ -1960,3 +1960,40 @@ AS (
 ```
 
 </details>
+
+<details>
+  <summary>Managing Tables : [ Auto Increment - SERIAL ] </summary>
+
+## SERIAL pseudo-type
+Used to create auto-increment column in a table.
+
+The basic syntax is as follows:
+```PostgreSQL
+CREATE TABLE table_name (
+  id SERIAL
+);
+```
+which is equivalent to:
+```PostgreSQL
+CREATE SEQUENCE table_name_id_seq;
+
+CREATE TABLE table_name (
+  id integer NOT NUL DEFAULT nextval('table_nam_id_seq)
+);
+
+ALTER SEQUENCE table_name_id_seq
+OWNED BY table_name.id;
+```
+PostgreSQL provides three serial pseudo types:
+- ``SMALLSERIAL``  
+- ``SERIAL``  
+- ``BIGSERIAL`` 
+
+Creates `fruits` table with the id column as the SERIAL column:  
+```PostgreSQL
+CREATE TABLE fruits (
+  id SERIAL PRIMARY KEY,
+  name V
+)
+``
+</details>
