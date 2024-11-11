@@ -23,6 +23,7 @@ Here is the list of topics that I have covered till now:
   - [15. Constraints](#15-constraints)
   - [16. Conditional Expressions \& Operators](#16-conditional-expressions--operators)
   - [17. Future Topics](#17-future-topics)
+  - [18. Database Setup](#18-database-setup)
 
 ---
 
@@ -114,6 +115,10 @@ In future updates, this guide will cover additional PostgreSQL topics:
 - **PostgreSQL Indexes**
 - **PostgreSQL Trigger Basics**
 - **PostgreSQL Administration**
+### 18. Database Setup
+All examples in this guide use the `dvdrental` database, which is included in the `db_design` folder. Ensure you have this database set up in your PostgreSQL environment to follow along with the examples.
+
 ---
 
 This README provides a quick reference to essential PostgreSQL commands for database management, data querying, and data manipulation. Refer to the PostgreSQL documentation for more detailed syntax and examples.
+
