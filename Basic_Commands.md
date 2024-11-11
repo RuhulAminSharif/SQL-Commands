@@ -2307,3 +2307,161 @@ ALTER COLUMN column_name
 DROP DEFAULT;
 ```
 </details>
+
+<details>
+  <summary>Conditional Expressions & Operators : [ CASE | COALESCE | NULLIF | CAST ]</summary>
+
+## CASE 
+- The PostgreSQL CASE expression is the same as IF/ELSE statement in other programming languages. It allows to add if-else logic to the query to form a powerful query.
+- Since CASE is an expression, we can use it in any place where we would use an expression such as SELECT, WHERE, GROUP BY, and HAVING clauses.
+- The CASE expression has two forms:
+  - General
+  - Simple
+### General CASE expression:
+```PostgreSQL
+CASE
+  WHEN condition1 THEN result1
+  WHEN condition2 THEN result2
+  [WHEN ... ]
+  [ELSE else_result]
+END
+```
+In this syntax,
+- each condition (``condition1``, ``condition2…``) is a boolean expression that returns either ``true`` or ``false``.
+- When a condition evaluates to ``false``, the ``CASE`` expression evaluates the next condition from top to bottom until it finds a condition that evaluates to ``true``.
+- If a condition evaluates to ``true``, the ``CASE`` expression returns the corresponding result that follows the condition.
+  - For example, if the ``condition2`` evaluates to ``true``, the ``CASE`` expression returns the ``result2``. Also, it immediately stops evaluating the remaining expressions. 
+- If all conditions are ``false``, the ``CASE`` expression returns the result (``else_result``) that follows the ``ELSE`` keyword. If we omit the ``ELSE`` clause, the ``CASE`` expression returns ``NULL``.
+
+Label the films by their lengths based on the following logic:
+- If the length is less than 50 minutes, the film is short.
+- If the length is greater than 50 minutes and less than or equal to 120 minutes, the film is medium.
+- If the length is greater than 120 minutes, the film is long.
+```PostgreSQL
+SELECT
+  title,
+  length,
+  CASE
+    WHEN length > 0 and length <= 50 THEN 'SHORT'
+    WHEN length > 50 and length <= 120 THEN 'MEDIUM'
+    WHEN length > 120 THEN 'LONG'
+  END AS duration
+FROM
+  film
+ORDER BY
+  title;
+```
+Assign price segments to films with the following logic:
+- If the rental rate is 0.99, the film is economic.
+- If the rental rate is 1.99, the film is mass.
+- If the rental rate is 4.99, the film is premium.
+And count the number of films that belong to economy, mass, and premium
+```PostgreSQL
+SELECT 
+  SUM (
+    CASE
+      WHEN rental_rate == 0.99 THEN 1 ELSE 0 
+    END
+  ) AS "Economy",
+  SUM (
+    CASE
+      WHEN rental_rate == 1.99 THEN 1 ELSE 0 
+    END
+  ) AS "Mass",
+  SUM (
+    CASE
+      WHEN rental_rate == 4.99 THEN 1 ELSE 0 
+    END
+  ) AS "Premium"
+FROM
+  film;
+```
+### Simple CASE expression
+```PostgreSQL
+CASE expression
+  WHEN value1 THEN result1
+  WHEN value2 THEN result2
+  [WHEN ...]
+  ELSE else_result
+END
+```
+- The CASE first evaluates the expression and compares the result with each value( value1, value2, …) in the WHEN clauses sequentially until it finds the match.
+- Once the result of the expression equals a value (value1, value2, etc.) in a WHEN clause, the CASE returns the corresponding result in the THEN clause.
+- If CASE does not find any matches, it returns the else_result in that follows the ELSE, or NULL value if the ELSE is not available.
+Adding rating description:
+```PostgreSQL
+SELECT title,
+       rating,
+       CASE rating
+           WHEN 'G' THEN 'General Audiences'
+           WHEN 'PG' THEN 'Parental Guidance Suggested'
+           WHEN 'PG-13' THEN 'Parents Strongly Cautioned'
+           WHEN 'R' THEN 'Restricted'
+           WHEN 'NC-17' THEN 'Adults Only'
+       END rating_description
+FROM film
+ORDER BY title;
+```
+## COALESCE
+- The COALESCE() function accepts a list of arguments and returns the first non-null argument.
+The basic syntax is as follows:
+```PostgreSQL
+COALESCE(argument1, argument2,...);
+```
+- The COALESCE() function evaluates arguments from left to right until it finds the first non-null argument. All the remaining arguments from the first non-null argument are not evaluated.
+
+Consider the following table:
+```PostgreSQL
+CREATE TABLE items (
+  id SERIAL PRIMARY KEY,
+  product VARCHAR (100) NOT NULL,
+  price NUMERIC NOT NULL,
+  discount NUMERIC
+);
+```
+Here, discount column accepts NULL values. If we calculate net price as ( price - discount ), then it will return NULL if discount column has NULL values. To solve this issue, we can use COALESCE function as follows:
+```PostgreSQL
+SELECT
+  product,
+  ( price - COALESCE(discount, 0) ) AS net_price
+FROM items;
+```
+This query can also executed using CASE statement as follows:
+```PostgreSQL
+SELECT
+  product,
+  ( price - ( CASE WHEN discount IS NULL THEN 0 ELSE discount END) ) AS net_price
+FROM items;
+```
+## NULLIF
+The basic syntax:
+```PostgreSQL
+NULLIF(argument1, argument2);
+```
+The ``NULLIF`` function returns a null value if argument1 equals to argument2, otherwise, it returns argument1.
+## CAST
+To convert a value of one type into another, we can use ``CAST() `` function and cast operator (``::``).   
+
+Using CAST() function:
+```PostgreSQL
+CAST( value AS target_type)
+```
+In this syntax:
+- First, provide a value that we want to convert. It can be a constant, a table column, or an expression.
+- Then, specify the target data type to which we want to convert the value.
+Using cast operator(::):
+```PostgreSQL
+value::target_type
+```
+In this syntax:
+- value is a value that we want to convert.
+- target_type specifies the target type that we want to cast the value to.
+
+Both the process will raise error, if it can't cast to desired type;
+
+
+Example:
+```PostgreSQL
+SELECT '2019-06-15 14:30:20'::timestamp;
+```
+</details>
