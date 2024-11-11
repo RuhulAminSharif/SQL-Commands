@@ -2131,3 +2131,179 @@ FROM existing_table
 WHERE condition;
 ```
 </details>
+
+<details>
+  <summary>Constraints : [ PRIMARY KEY | FOREIGN KEY | CHECK | UNIQUE | NOT NULL | DEFAULT ] </summary>
+
+## PRIMARY KEY
+- A primary key is a column or a group of columns used to uniquely identify a row in a table. The column that participates in the primary key is known as the primary key column.
+- A table can have zero or one primary key. It cannot have more than one primary key.
+- Technically, a primary key constraint is the combination of a not-null constraint and a UNIQUE constraint.
+
+To define primary key for a table while creating it:
+```PostgreSQL
+CREATE TABLE table_name (
+  column1 datatype PRIMARY KEY,
+  column2 datatype, 
+  ... ... ...
+);
+-----------------------------------if the PRIMARY KEY consists of more that one column
+CREATE TABLE table_name (
+  column1 datatype,
+  column2 data_type,
+  column3 data_type,
+  ... ... ... 
+  PRIMARY KEY(column1, column2, ...)
+)
+```
+To add a primary key to an existing table:
+```PostgreSQL
+ALTER TABLE table_name
+ADD PRIMARY KEY ( column1, column2, ...);
+```
+- Default name for the primary key constraint: table-name_pkey
+- To assign name for the PRIMARY KEY:
+  ```PostgreSQL
+  CONSTRAINT constraint_name
+  PRIMARY KEY(column1, column2, ...)
+  ``` 
+To drop a primary key:
+```PostgreSQL
+ALTER TABLE table_name
+DROP CONSTRAINT primary_key_constraint_name;
+```
+## FOREIGN KEY
+- A foreign key is a column or a group of columns in a table that uniquely identifies a row in another table.
+- A foreign key establishes a link between the data in two tables by referencing the primary key or a unique constraint of the referenced table.
+- The table containing a foreign key is referred to as the referencing table or child table. Conversely, the table referenced by a foreign key is known as the referenced table or parent table.
+- The main purpose of foreign keys is to maintain referential integrity in a relational database, ensuring that relationships between the parent and child tables are valid.
+  - For example, a foreign key prevents the insertion of values that do not have corresponding values in the referenced table.
+
+The basic syntax is as follows:
+```PostgreSQL
+[ CONSTRAINT fk_name]
+  FOREIGN KEY(fk_columns)
+  REFERENCES parent_table(parent_key_columns)
+  [ON DELETE delete_action]
+  [ON UPDATE update_action]
+```
+In this syntax:
+- First, specify the name for the foreign key constraint after the CONSTRAINT keyword. The CONSTRAINT clause is optional. If we omit it, PostgreSQL will assign an auto-generated name.
+- Second, specify one or more foreign key columns in parentheses after the FOREIGN KEY keywords.
+- Third, specify the parent table and parent key columns referenced by the foreign key columns in the REFERENCES clause.
+- Finally, specify the desired delete and update actions in the ON DELETE and ON UPDATE clauses.
+  - The delete and update actions determine the behaviors when the primary key in the parent table is deleted and updated.
+
+PostgreSQL supports the following actions:
+- SET NULL
+- SET DEFAULT
+- RESTRICT
+- NO ACTION 
+- CASCADE
+To add a foreign key constraint to an existing table:
+```PostgreSQL
+ALTER TABLE child_table
+ADD CONSTRAINT constraint_name
+FOREIGN KEY (fk_columns)
+REFERENCES parent_table(parent_key_columns)
+[ ON DELETE delete_action]
+[ ON UPDATE update_action]
+```
+## CHECK 
+- A ``CHECK`` constraint ensures that values in a column or a group of columns meet a specific condition.
+- A check constraint allows to enforce data integrity rules at the database level.
+- A check constraint uses a boolean expression to evaluate the values, ensuring that only valid data is inserted or updated in a table.
+The basic syntax is as follows:
+```PostgreSQL
+-----------------------------------if check condition involve one column
+CREATE TABLE table_name (
+  column1 data_type,
+  column2 data_type CHECK(condition),
+  ... ... ... 
+);
+-----------------------------------if check condition involve more than one column
+CREATE TABLE table_name (
+  column1 data_type,
+  ... ... ...
+  CONSTRAINT constraint_name CHECK(condition)
+);
+```
+Here, constraint_name is optional. If we omit this, PostgreSQL will assign a default name using the following format:
+```PostgreSQL
+{table}_{column}_check
+```
+To add check constraint to tables:
+```PostgreSQL
+ALTER TABLE table_name
+ADD CONSTRAINT constraint_name CHECK (condition);
+```
+To remove check constraint:
+```PostgreSQL
+ALTER TABLE table_name
+DROP CONSTRAINT constraint_name;
+```
+## UNIQUE
+- Used to ensure that values stored in a column or a group of columns are unique across the whole table.
+```PostgreSQL
+CREATE TABLE table_name (
+  column1 data_type,
+  column2 data_type UNIQUE,
+  ... ... ...
+);
+--------------------------Or, 
+CREATE TABLE table_name (
+  column1 data_type,
+  column2 data_type,
+  ... ... ...
+  
+  UNIQUE(columns)
+);
+```
+## NOT NULL
+- NULL represents unknown or missing information. NULL is not the same as an empty string or the number zero.
+- To check if a value is NULL or not, use ``IS NULL`` boolean operator
+  - For example, to check if the email_address is NULL or not:
+    ```PostgreSQL
+    email_address IS NULL;
+    ``` 
+
+To add ``NOT NULL`` constraint to a column:
+```PostgreSQL
+CREATE TABLE table_name(
+   ...
+   column_name data_type NOT NULL,
+   ...
+);
+```
+To add ``NOT NULL`` constraint to an existing column:
+```PostgreSQL
+ALTER TABLE table_name
+ALTER COLUMN column_name SET NOT NULL;
+```
+Using CHECK to force a column to accept NOT NULL values:
+```PostgreSQL
+CHECK(column IS NOT NULL);
+```
+## DEFAULT 
+To add default value:
+```PostgreSQL
+CREATE TABLE table_name(
+  column1 data_type,
+  column2 data_type DEFAULT default_value,
+  column3 data_type,
+  ... ... ...
+);
+```
+To add default to an existing column;
+```PostgreSQL
+ALTER TABLE table_name
+ALTER COLUMN column_name
+SET DEFAULT default_value;
+```
+To remove default value from a column:
+```PostgreSQL
+ALTER TABLE table_name
+ALTER COLUMN column_name
+DROP DEFAULT;
+```
+</details>
